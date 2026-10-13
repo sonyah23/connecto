@@ -1,0 +1,3114 @@
+﻿<!DOCTYPE html>
+<html lang="fr" class="h-full bg-slate-50">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connecto | CBC / Radio-Canada</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            cbcred: {
+              DEFAULT: '#da1a32',
+              hover: '#b51427',
+              dark: '#8b0d1d',
+              light: '#fdf2f3',
+              border: '#f8d2d6'
+            },
+            rcdark: '#1e2530',
+            rcslate: '#0f172a'
+          }
+        }
+      }
+    }
+  </script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* Custom scrollbars */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    .badge-ti { background-color: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
+    .badge-editorial { background-color: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
+    .badge-corporate { background-color: #faf5ff; color: #6b21a8; border: 1px solid #e9d5ff; }
+  </style>
+</head>
+<body class="h-full flex flex-col text-slate-800 antialiased selection:bg-red-100 selection:text-red-900">
+
+  <!-- ================= Top Navigation Bar ================= -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        
+        <!-- Brand & Logo -->
+        <div class="flex items-center space-x-3">
+          <div class="w-9 h-9 rounded-lg bg-cbcred flex items-center justify-center text-white shadow-sm shadow-red-200">
+            <!-- Simplified Gemstone Symbol -->
+            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" opacity="0.3"/>
+              <path d="M12 5a7 7 0 0 1 7 7h2c0-4.97-4.03-9-9-9v2zm0 14a7 7 0 0 1-7-7H3c0 4.97 4.03 9 9 9v-2z"/>
+            </svg>
+          </div>
+          <div>
+            <div class="flex items-center space-x-2">
+              <span class="font-bold text-slate-900 text-lg tracking-tight">Connecto</span>
+              <span class="text-xs px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 font-medium border border-slate-200">CBC / Radio-Canada</span>
+            </div>
+            <p class="text-xs text-slate-500 font-medium">Répertoire & Moteur d'Expertise Interne &bull; SME Directory</p>
+          </div>
+        </div>
+
+        <!-- Top Action Buttons & Language Switcher -->
+        <div class="flex items-center space-x-3">
+          <!-- Language Toggle -->
+          <div class="bg-slate-100 p-0.5 rounded-lg border border-slate-200 flex text-xs font-semibold">
+            <button id="lang-fr-btn" class="px-2.5 py-1 rounded-md bg-white text-slate-900 shadow-sm transition-all">FR</button>
+            <button id="lang-en-btn" class="px-2.5 py-1 rounded-md text-slate-500 hover:text-slate-900 transition-all">EN</button>
+          </div>
+
+          <!-- Add SME Button -->
+          <button id="btn-add-expert" class="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-cbcred hover:bg-cbcred-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 shadow-sm transition">
+            <i data-lucide="user-plus" class="w-4 h-4 mr-1.5"></i>
+            <span data-i18n="addExpert">Ajouter un expert</span>
+          </button>
+
+          <!-- Ingestion & Import Button -->
+          <button id="btn-open-import" class="inline-flex items-center px-3 py-2 border border-slate-300 text-sm font-medium rounded-lg text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 shadow-sm transition">
+            <i data-lucide="upload-cloud" class="w-4 h-4 mr-1.5 text-slate-500"></i>
+            <span data-i18n="importData">Importer / Parser</span>
+          </button>
+
+          <!-- Export Dropdown / Menu -->
+          <div class="relative inline-block text-left">
+            <button id="btn-export-dropdown" class="inline-flex items-center px-2.5 py-2 border border-slate-300 text-sm font-medium rounded-lg text-slate-700 bg-white hover:bg-slate-50 shadow-sm">
+              <i data-lucide="download" class="w-4 h-4 mr-1 text-slate-500"></i>
+              <span data-i18n="export">Exporter</span>
+              <i data-lucide="chevron-down" class="w-3.5 h-3.5 ml-1 text-slate-400"></i>
+            </button>
+            <div id="export-menu" class="hidden origin-top-right absolute right-0 mt-2 w-44 rounded-lg shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-40 divide-y divide-slate-100">
+              <div class="py-1">
+                <button id="btn-export-csv" class="group flex items-center px-4 py-2 text-xs text-slate-700 hover:bg-slate-50 w-full text-left">
+                  <i data-lucide="file-spreadsheet" class="w-4 h-4 mr-2 text-emerald-600"></i>
+                  <span>Format Excel / CSV</span>
+                </button>
+                <button id="btn-export-json" class="group flex items-center px-4 py-2 text-xs text-slate-700 hover:bg-slate-50 w-full text-left">
+                  <i data-lucide="file-code" class="w-4 h-4 mr-2 text-blue-600"></i>
+                  <span>Sauvegarde JSON</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= Search & Quick Topics Header ================= -->
+  <section class="bg-gradient-to-b from-white to-slate-100/70 border-b border-slate-200 py-6 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto">
+      
+      <!-- Primary Search Input Bar -->
+      <div class="relative max-w-3xl mx-auto shadow-sm rounded-xl">
+        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+          <i data-lucide="search" class="w-5 h-5 text-cbcred"></i>
+        </div>
+        <input 
+          type="text" 
+          id="search-input"
+          placeholder="Rechercher par sujet, compétence, outil ou nom (ex: Trint, Cloud, Dalet, Cybersécurité, Économie, IA)..."
+          class="block w-full pl-12 pr-28 py-3.5 border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cbcred focus:border-cbcred sm:text-base transition bg-white shadow-inner"
+          autocomplete="off"
+        >
+        <!-- Clear search button -->
+        <button id="btn-clear-search" class="hidden absolute inset-y-0 right-14 pr-2 flex items-center text-slate-400 hover:text-slate-600">
+          <i data-lucide="x-circle" class="w-5 h-5"></i>
+        </button>
+        <!-- Total results indicator badge -->
+        <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+          <span id="results-count-badge" class="text-xs bg-slate-100 text-slate-600 font-semibold px-2.5 py-1 rounded-md border border-slate-200">
+            -- experts
+          </span>
+        </div>
+      </div>
+
+      <!-- Quick Topic Suggestions (Click to search) -->
+      <div class="max-w-4xl mx-auto mt-3.5 flex items-center justify-center flex-wrap gap-1.5 text-xs text-slate-500">
+        <span class="font-medium text-slate-400 mr-1 flex items-center">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5 mr-1 text-amber-500"></i>
+          <span data-i18n="suggestions">Suggestions rapides :</span>
+        </span>
+        <button class="quick-tag px-2.5 py-1 rounded-full bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 transition shadow-xs" data-tag="Trint">Trint / Transcription</button>
+        <button class="quick-tag px-2.5 py-1 rounded-full bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 transition shadow-xs" data-tag="Cloud">Cloud & Streaming</button>
+        <button class="quick-tag px-2.5 py-1 rounded-full bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 transition shadow-xs" data-tag="Dalet">Dalet & MAM</button>
+        <button class="quick-tag px-2.5 py-1 rounded-full bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 transition shadow-xs" data-tag="Cybersécurité">Cybersécurité</button>
+        <button class="quick-tag px-2.5 py-1 rounded-full bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 transition shadow-xs" data-tag="IA">IA & Recommandation</button>
+        <button class="quick-tag px-2.5 py-1 rounded-full bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 transition shadow-xs" data-tag="Économie">Banque du Canada / Économie</button>
+        <button class="quick-tag px-2.5 py-1 rounded-full bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 transition shadow-xs" data-tag="Politique">Politique fédérale / Colline</button>
+        <button class="quick-tag px-2.5 py-1 rounded-full bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 transition shadow-xs" data-tag="CRTC">CRTC / Droits d'auteur</button>
+        <button class="quick-tag px-2.5 py-1 rounded-full bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 transition shadow-xs" data-tag="Autochtone">Affaires Autochtones</button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= Main Body Layout (Sidebar + Results Grid) ================= -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <div class="flex flex-col md:flex-row gap-6 items-start">
+
+      <!-- ================= Left Faceted Filter Sidebar ================= -->
+      <aside class="w-full md:w-64 shrink-0 bg-white p-4 rounded-xl border border-slate-200 shadow-xs space-y-6">
+        
+        <!-- Filter Header -->
+        <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+          <div class="flex items-center text-slate-900 font-semibold text-sm">
+            <i data-lucide="filter" class="w-4 h-4 mr-2 text-slate-500"></i>
+            <span data-i18n="filters">Filtres de recherche</span>
+          </div>
+          <button id="btn-reset-filters" class="text-xs text-cbcred hover:text-cbcred-hover font-medium underline">
+            <span data-i18n="reset">Effacer</span>
+          </button>
+        </div>
+
+        <!-- 1. Division / Sector Filter -->
+        <div>
+          <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2" data-i18n="division">
+            Secteur / Branche
+          </label>
+          <div class="space-y-1.5" id="division-filter-group">
+            <label class="flex items-center text-xs text-slate-700 hover:text-slate-900 cursor-pointer">
+              <input type="radio" name="filter-division" value="all" checked class="text-cbcred focus:ring-cbcred h-3.5 w-3.5 border-slate-300">
+              <span class="ml-2 font-medium" data-i18n="divAll">Tous les secteurs</span>
+            </label>
+            <label class="flex items-center text-xs text-slate-700 hover:text-slate-900 cursor-pointer">
+              <input type="radio" name="filter-division" value="ti" class="text-cbcred focus:ring-cbcred h-3.5 w-3.5 border-slate-300">
+              <span class="ml-2 flex items-center">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 mr-1.5"></span>
+                Technologies & Infra (T&I)
+              </span>
+            </label>
+            <label class="flex items-center text-xs text-slate-700 hover:text-slate-900 cursor-pointer">
+              <input type="radio" name="filter-division" value="editorial" class="text-cbcred focus:ring-cbcred h-3.5 w-3.5 border-slate-300">
+              <span class="ml-2 flex items-center">
+                <span class="w-2 h-2 rounded-full bg-blue-500 mr-1.5"></span>
+                Information & Nouvelles
+              </span>
+            </label>
+            <label class="flex items-center text-xs text-slate-700 hover:text-slate-900 cursor-pointer">
+              <input type="radio" name="filter-division" value="corporate" class="text-cbcred focus:ring-cbcred h-3.5 w-3.5 border-slate-300">
+              <span class="ml-2 flex items-center">
+                <span class="w-2 h-2 rounded-full bg-purple-500 mr-1.5"></span>
+                Juridique & Opérations
+              </span>
+            </label>
+          </div>
+        </div>
+
+        <!-- 2. Language Filter -->
+        <div>
+          <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2" data-i18n="language">
+            Langue de travail
+          </label>
+          <div class="space-y-1.5" id="language-filter-group">
+            <label class="flex items-center text-xs text-slate-700 hover:text-slate-900 cursor-pointer">
+              <input type="radio" name="filter-language" value="all" checked class="text-cbcred focus:ring-cbcred h-3.5 w-3.5 border-slate-300">
+              <span class="ml-2" data-i18n="langAll">Toutes les langues</span>
+            </label>
+            <label class="flex items-center text-xs text-slate-700 hover:text-slate-900 cursor-pointer">
+              <input type="radio" name="filter-language" value="bilingual" class="text-cbcred focus:ring-cbcred h-3.5 w-3.5 border-slate-300">
+              <span class="ml-2 font-medium">Bilingue (FR / EN)</span>
+            </label>
+            <label class="flex items-center text-xs text-slate-700 hover:text-slate-900 cursor-pointer">
+              <input type="radio" name="filter-language" value="fr" class="text-cbcred focus:ring-cbcred h-3.5 w-3.5 border-slate-300">
+              <span class="ml-2">Français</span>
+            </label>
+            <label class="flex items-center text-xs text-slate-700 hover:text-slate-900 cursor-pointer">
+              <input type="radio" name="filter-language" value="en" class="text-cbcred focus:ring-cbcred h-3.5 w-3.5 border-slate-300">
+              <span class="ml-2">English</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- 3. Bureau / Location Filter -->
+        <div>
+          <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2" data-i18n="bureau">
+            Bureau / Emplacement
+          </label>
+          <select id="filter-bureau-select" class="block w-full text-xs border-slate-300 rounded-lg shadow-2xs focus:ring-cbcred focus:border-cbcred py-2 px-2.5 bg-slate-50">
+            <option value="all" data-i18n="bureauAll">Tous les bureaux</option>
+            <option value="Montréal">Montréal (Maison de Radio-Canada)</option>
+            <option value="Toronto">Toronto (Canadian Broadcasting Centre)</option>
+            <option value="Ottawa">Ottawa (Bureau parlementaire)</option>
+            <option value="Vancouver">Vancouver</option>
+            <option value="Halifax">Halifax</option>
+            <option value="Québec">Québec</option>
+          </select>
+        </div>
+
+        <!-- System & Privacy Note -->
+        <div class="pt-4 border-t border-slate-100 text-[11px] text-slate-400 space-y-2">
+          <div class="flex items-center text-emerald-700 font-semibold">
+            <i data-lucide="shield-check" class="w-3.5 h-3.5 mr-1 text-emerald-600"></i>
+            <span>Local & Confidentiel</span>
+          </div>
+          <p>Données stockées uniquement sur votre poste. Conforme aux règles de sécurité CBC/Radio-Canada.</p>
+        </div>
+
+      </aside>
+
+      <!-- ================= Right Results Section ================= -->
+      <section class="flex-1 w-full space-y-4">
+
+        <!-- Active Filters & Summary Bar -->
+        <div class="flex flex-wrap items-center justify-between gap-2 bg-white px-4 py-3 rounded-xl border border-slate-200 text-xs shadow-2xs">
+          <div class="flex items-center space-x-2">
+            <span class="text-slate-500" data-i18n="showing">Affichage :</span>
+            <span id="active-filter-summary" class="font-semibold text-slate-900">Tous les spécialistes</span>
+          </div>
+          
+          <div class="flex items-center space-x-2">
+            <!-- View toggles (Grid / List) -->
+            <button id="view-grid-btn" class="p-1.5 rounded-md bg-slate-100 text-slate-800 hover:bg-slate-200 transition">
+              <i data-lucide="layout-grid" class="w-4 h-4"></i>
+            </button>
+            <button id="view-list-btn" class="p-1.5 rounded-md text-slate-400 hover:text-slate-800 hover:bg-slate-100 transition">
+              <i data-lucide="list" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Results Grid Container -->
+        <div id="experts-container" class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <!-- Populated dynamically via app.js -->
+        </div>
+
+        <!-- Empty State (when no results match) -->
+        <div id="empty-state" class="hidden text-center py-16 px-4 bg-white rounded-xl border border-dashed border-slate-300">
+          <div class="w-12 h-12 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mx-auto mb-3">
+            <i data-lucide="user-x" class="w-6 h-6"></i>
+          </div>
+          <h3 class="text-base font-semibold text-slate-800" data-i18n="noResultsTitle">Aucun expert trouvé</h3>
+          <p class="text-xs text-slate-500 max-w-sm mx-auto mt-1" data-i18n="noResultsDesc">
+            Essayez de simplifier votre requête, de retirer certains filtres, ou ajoutez un nouveau spécialiste au répertoire.
+          </p>
+          <button id="btn-empty-clear" class="mt-4 px-3 py-1.5 text-xs font-semibold text-cbcred bg-red-50 hover:bg-red-100 rounded-lg transition" data-i18n="clearFilters">
+            Réinitialiser les filtres
+          </button>
+        </div>
+
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ================= Modal: Expert Detail View ================= -->
+  <div id="modal-expert-detail" class="hidden fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-2xl w-full shadow-2xl border border-slate-200 overflow-hidden transform transition-all">
+      <div id="modal-detail-content">
+        <!-- Injected via app.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= Modal: Add / Edit Expert ================= -->
+  <div id="modal-expert-edit" class="hidden fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-2xl w-full shadow-2xl border border-slate-200 overflow-hidden">
+      
+      <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+        <h3 id="modal-edit-title" class="text-base font-bold text-slate-900 flex items-center">
+          <i data-lucide="user-cog" class="w-5 h-5 mr-2 text-cbcred"></i>
+          <span>Ajouter / Modifier un spécialiste</span>
+        </h3>
+        <button class="btn-close-modal text-slate-400 hover:text-slate-600">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="form-expert-edit" class="p-6 space-y-4 text-xs">
+        <input type="hidden" id="edit-id">
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Nom complet *</label>
+            <input type="text" id="edit-name" required class="w-full border-slate-300 rounded-lg text-xs py-2 px-3 focus:ring-cbcred focus:border-cbcred">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Courriel officiel CBC/RC *</label>
+            <input type="email" id="edit-email" required class="w-full border-slate-300 rounded-lg text-xs py-2 px-3 focus:ring-cbcred focus:border-cbcred">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Titre du poste (Français) *</label>
+            <input type="text" id="edit-title" required class="w-full border-slate-300 rounded-lg text-xs py-2 px-3 focus:ring-cbcred focus:border-cbcred">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Job Title (English)</label>
+            <input type="text" id="edit-title-en" class="w-full border-slate-300 rounded-lg text-xs py-2 px-3 focus:ring-cbcred focus:border-cbcred">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Secteur / Branche *</label>
+            <select id="edit-division" class="w-full border-slate-300 rounded-lg text-xs py-2 px-3 focus:ring-cbcred focus:border-cbcred bg-white">
+              <option value="ti">Technologies & Infra (T&I)</option>
+              <option value="editorial">Information & Nouvelles</option>
+              <option value="corporate">Juridique & Opérations</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Bureau / Ville *</label>
+            <input type="text" id="edit-bureau" required placeholder="Montréal, Toronto, Ottawa..." class="w-full border-slate-300 rounded-lg text-xs py-2 px-3 focus:ring-cbcred focus:border-cbcred">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Langue *</label>
+            <select id="edit-language" class="w-full border-slate-300 rounded-lg text-xs py-2 px-3 focus:ring-cbcred focus:border-cbcred bg-white">
+              <option value="bilingual">Bilingue (FR / EN)</option>
+              <option value="fr">Français</option>
+              <option value="en">English</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Département ou Unité</label>
+          <input type="text" id="edit-department" placeholder="ex: Solutions Média, Rédaction RDI, Affaires Juridiques..." class="w-full border-slate-300 rounded-lg text-xs py-2 px-3 focus:ring-cbcred focus:border-cbcred">
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Compétences & Mots-clés (séparés par des virgules)</label>
+          <input type="text" id="edit-skills" placeholder="Trint, Cloud, AWS, Dalet, Cybersécurité, CRTC..." class="w-full border-slate-300 rounded-lg text-xs py-2 px-3 focus:ring-cbcred focus:border-cbcred">
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Sujets couverts / Beats (séparés par des virgules)</label>
+          <input type="text" id="edit-beats" placeholder="Colline parlementaire, Économie, IA, Climat..." class="w-full border-slate-300 rounded-lg text-xs py-2 px-3 focus:ring-cbcred focus:border-cbcred">
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Outils & Logiciels (séparés par des virgules)</label>
+          <input type="text" id="edit-tools" placeholder="Dalet Galaxy, iNews, Trint, ScheduALL, Bloomberg..." class="w-full border-slate-300 rounded-lg text-xs py-2 px-3 focus:ring-cbcred focus:border-cbcred">
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1 flex items-center justify-between">
+            <span class="flex items-center">
+              <i data-lucide="book-open" class="w-3.5 h-3.5 mr-1 text-blue-600"></i>
+              <span>Pages Confluence & Liens Documentation</span>
+            </span>
+            <span class="text-[10px] text-slate-400 font-normal">Format : Titre|URL (séparés par des virgules)</span>
+          </label>
+          <input type="text" id="edit-confluence" placeholder="Ex: Guide Trint|https://confluence.cbcrc.ca/display/TI/Trint, https://..." class="w-full border-slate-300 rounded-lg text-xs py-2 px-3 focus:ring-cbcred focus:border-cbcred">
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Biographie / Portée du rôle</label>
+          <textarea id="edit-bio" rows="3" class="w-full border-slate-300 rounded-lg text-xs py-2 px-3 focus:ring-cbcred focus:border-cbcred" placeholder="Décrivez les sujets pour lesquels contacter cet expert..."></textarea>
+        </div>
+
+        <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
+          <button type="button" id="btn-delete-expert" class="hidden text-xs text-red-600 hover:text-red-700 font-semibold">
+            Supprimer cette fiche
+          </button>
+          <div class="flex items-center space-x-2 ml-auto">
+            <button type="button" class="btn-close-modal px-4 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 font-medium">Annuler</button>
+            <button type="submit" class="px-4 py-2 bg-cbcred hover:bg-cbcred-hover text-white rounded-lg font-semibold shadow-sm">Enregistrer</button>
+          </div>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+  <!-- ================= Modal: Data Import & Document Parser ================= -->
+  <div id="modal-import" class="hidden fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-2xl w-full shadow-2xl border border-slate-200 overflow-hidden">
+      
+      <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+        <div>
+          <h3 class="text-base font-bold text-slate-900 flex items-center">
+            <i data-lucide="upload-cloud" class="w-5 h-5 mr-2 text-cbcred"></i>
+            <span data-i18n="importModalTitle">Importer des ressources internes</span>
+          </h3>
+          <p class="text-xs text-slate-500">Ajoutez des fichiers Workday/Excel ou analysez des documents internes</p>
+        </div>
+        <button class="btn-close-modal text-slate-400 hover:text-slate-600">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Import Mode Tabs -->
+      <div class="border-b border-slate-200 bg-slate-50/50 px-6 flex space-x-6 text-xs font-semibold">
+        <button id="tab-btn-csv" class="py-3 border-b-2 border-cbcred text-cbcred flex items-center">
+          <i data-lucide="file-spreadsheet" class="w-4 h-4 mr-1.5"></i>
+          <span>Fichier CSV / Excel</span>
+        </button>
+        <button id="tab-btn-doc" class="py-3 border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center">
+          <i data-lucide="file-text" class="w-4 h-4 mr-1.5"></i>
+          <span>Coller document / Notes</span>
+        </button>
+        <button id="tab-btn-reset" class="py-3 border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center">
+          <i data-lucide="rotate-ccw" class="w-4 h-4 mr-1.5"></i>
+          <span>Réinitialiser</span>
+        </button>
+      </div>
+
+      <div class="p-6">
+        
+        <!-- Tab 1: CSV Import Content -->
+        <div id="tab-content-csv" class="space-y-4 text-xs">
+          <div id="drop-zone" class="border-2 border-dashed border-slate-300 rounded-xl p-8 text-center hover:border-cbcred transition cursor-pointer bg-slate-50/50">
+            <i data-lucide="file-up" class="w-10 h-10 text-slate-400 mx-auto mb-2"></i>
+            <p class="font-semibold text-slate-700">Glissez-déposez votre fichier CSV ou export Workday ici</p>
+            <p class="text-slate-400 mt-1">ou cliquez pour sélectionner un fichier depuis votre poste</p>
+            <input type="file" id="file-input-csv" accept=".csv, .txt, .tsv" class="hidden">
+          </div>
+
+          <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 text-blue-900 text-xs">
+            <p class="font-semibold mb-1 flex items-center">
+              <i data-lucide="info" class="w-4 h-4 mr-1 text-blue-600"></i>
+              Format de colonnes reconnu automatiquement :
+            </p>
+            <p class="text-blue-800">
+              <code>Nom, Titre, Département, Bureau, Email, Langue, Compétences (Skills), Sujets (Beats)</code>
+            </p>
+          </div>
+
+          <div id="csv-preview-container" class="hidden space-y-2">
+            <p class="font-bold text-slate-700">Aperçu des contacts détectés :</p>
+            <div id="csv-preview-list" class="max-h-48 overflow-y-auto border border-slate-200 rounded-lg divide-y divide-slate-100 bg-white p-2"></div>
+            <button id="btn-confirm-csv-import" class="w-full py-2 bg-cbcred hover:bg-cbcred-hover text-white rounded-lg font-semibold shadow-sm transition">
+              Importer et fusionner ces contacts
+            </button>
+          </div>
+        </div>
+
+        <!-- Tab 2: Document / Note Paste Parser -->
+        <div id="tab-content-doc" class="hidden space-y-4 text-xs">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Collez le texte d'un document interne, compte-rendu ou liste de contacts :</label>
+            <textarea id="doc-text-input" rows="7" placeholder="Collez ici le texte d'un courriel, d'une note de service, d'un organigramme ou d'un appel d'offres... Le système extraira automatiquement les courriels et associera les compétences clés détectées." class="w-full border-slate-300 rounded-lg text-xs p-3 focus:ring-cbcred focus:border-cbcred"></textarea>
+          </div>
+          <button id="btn-parse-doc-text" class="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-lg font-semibold shadow-sm transition flex items-center justify-center">
+            <i data-lucide="sparkles" class="w-4 h-4 mr-2 text-amber-400"></i>
+            <span>Analyser et extraire les spécialistes</span>
+          </button>
+          <div id="doc-preview-container" class="hidden space-y-2">
+            <p class="font-bold text-slate-700">Spécialistes extraits :</p>
+            <div id="doc-preview-list" class="max-h-48 overflow-y-auto border border-slate-200 rounded-lg divide-y divide-slate-100 bg-white p-2"></div>
+            <button id="btn-confirm-doc-import" class="w-full py-2 bg-cbcred hover:bg-cbcred-hover text-white rounded-lg font-semibold shadow-sm transition">
+              Ajouter au répertoire
+            </button>
+          </div>
+        </div>
+
+        <!-- Tab 3: Reset / Restore Seed Data -->
+        <div id="tab-content-reset" class="hidden space-y-4 text-xs">
+          <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 text-amber-900">
+            <h4 class="font-bold mb-1 flex items-center">
+              <i data-lucide="alert-triangle" class="w-4 h-4 mr-1 text-amber-600"></i>
+              Restaurer la base d'origine
+            </h4>
+            <p class="text-amber-800">
+              Cette action rechargera les profils certifiés par défaut de CBC / Radio-Canada (T&I, Information, Affaires juridiques) et remplacera les modifications locales.
+            </p>
+          </div>
+          <button id="btn-confirm-reset" class="w-full py-2.5 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-semibold shadow-sm transition">
+            Confirmer et recharger les profils d'origine
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast" class="hidden fixed bottom-5 right-5 z-50 bg-slate-900 text-white text-xs px-4 py-2.5 rounded-xl shadow-lg flex items-center space-x-2 border border-slate-700 transition transform">
+    <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i>
+    <span id="toast-message">Message</span>
+  </div>
+
+  <!-- Core Scripts -->
+  <script>
+/**
+ * Connecto - CBC / Radio-Canada
+ * Unified Standalone Client Bundle
+ * Self-contained: works on any web host, CDN, or local file without module restrictions.
+ */
+(function() {
+
+/**
+ * CBC / Radio-Canada Connecto - Expert & SME Seed Dataset
+ * Contient un répertoire de spécialistes avec :
+ * - Profils complets (T&I, Editorial, Corporate)
+ * - Liens vers la documentation Confluence interne
+ * - Horodatage de dernière mise à jour (updatedAt)
+ */
+
+const SEED_EXPERTS = [
+  // =========================================================================
+  // 1. TECHNOLOGIES & INFRASTRUCTURE (T&I)
+  // =========================================================================
+  {
+    id: "ti-001",
+    name: "Sonya Hoche",
+    title: "Première Cheffe de produit T&I",
+    titleEn: "Senior Product Manager T&I",
+    division: "ti",
+    department: "Technologies & Solutions Média",
+    bureau: "Montréal",
+    locationDetail: "Maison de Radio-Canada (1000 Papineau)",
+    email: "sonya.hoche@radio-canada.ca",
+    phone: "+1 514-597-5000",
+    teamsId: "sonya.hoche@radio-canada.ca",
+    language: "bilingual",
+    skills: ["Gestion de produit", "Product Management", "Trint", "Transcription automatisée", "Workflow Média", "Sous-titrage", "Ingestion Audio/Vidéo", "Innovation IA"],
+    beats: ["Product Strategy", "Media Tech", "AI Workflows", "Newsroom Tooling"],
+    bioFr: "Première cheffe de produit au sein de T&I, spécialisée dans les solutions d'automatisation de flux médias, transcription assistée par IA (Trint) et optimisation des outils éditoriaux.",
+    bioEn: "Senior Product Manager within T&I, specializing in media workflow automation, AI-assisted transcription (Trint), and editorial tooling optimization.",
+    projects: ["Déploiement national Trint", "Modernisation des outils de sous-titrage", "Plateforme unifiée d'ingestion"],
+    tools: ["Trint", "Dalet Galaxy", "Jira", "AWS Media Services", "Figma"],
+    confluenceLinks: [
+      { title: "Documentation Trint T&I - Guide & Déploiement", url: "https://confluence.cbcrc.ca/display/TI/Trint+Workflow+Automation" },
+      { title: "Espace Produit Solutions Ingestion & Sous-titrage", url: "https://confluence.cbcrc.ca/display/TI/Sous-titrage+et+Ingestion" }
+    ],
+    updatedAt: "2026-09-05T14:30:00Z"
+  },
+  {
+    id: "ti-002",
+    name: "Marc-André Tremblay",
+    title: "Architecte Cloud & Plateformes de Streaming",
+    titleEn: "Cloud & Streaming Platforms Architect",
+    division: "ti",
+    department: "Infrastructure Numérique & Cloud",
+    bureau: "Montréal",
+    locationDetail: "Maison de Radio-Canada",
+    email: "marc-andre.tremblay@radio-canada.ca",
+    teamsId: "marc-andre.tremblay@radio-canada.ca",
+    language: "bilingual",
+    skills: ["AWS", "Kubernetes", "CDN", "Akamai", "HLS / DASH", "Architecture Cloud", "Haute Disponibilité", "DevOps"],
+    beats: ["Streaming OTT", "Cloud Migration", "Video Delivery"],
+    bioFr: "Architecte principal des plateformes de diffusion numérique (ICI TOU.TV, CBC Gem, OHdio). Spécialiste des pics de charge lors d'événements majeurs (Jeux Olympiques, Élections).",
+    bioEn: "Lead streaming infrastructure architect for ICI TOU.TV, CBC Gem, and OHdio. Expert in live peak traffic handling (Olympics, Federal Elections).",
+    projects: ["Migration Cloud TOU.TV", "Refonte du pipeline OTT HLS/DASH multi-CDN", "Architecture Jeux Olympiques Paris 2024"],
+    tools: ["AWS MediaTailor", "CloudFront", "Terraform", "Docker", "Datadog"],
+    confluenceLinks: [
+      { title: "Architecture Streaming OTT & Multi-CDN CBC/RC", url: "https://confluence.cbcrc.ca/display/CLOUD/OTT+Streaming+Architecture" },
+      { title: "Runbook Gestion des Pics de Trafic & Événements", url: "https://confluence.cbcrc.ca/display/CLOUD/Traffic+Peak+Runbook" }
+    ],
+    updatedAt: "2026-08-30T11:15:00Z"
+  },
+  {
+    id: "ti-003",
+    name: "Sarah Jenkins",
+    title: "Senior Broadcast Systems Engineer",
+    titleEn: "Senior Broadcast Systems Engineer",
+    division: "ti",
+    department: "Broadcast Operations & Engineering",
+    bureau: "Toronto",
+    locationDetail: "Canadian Broadcasting Centre (250 Front St W)",
+    email: "sarah.jenkins@cbc.ca",
+    teamsId: "sarah.jenkins@cbc.ca",
+    language: "en",
+    skills: ["SMPTE ST 2110", "IP Video", "Master Control", "Routing Systems", "SDI to IP", "Live Studio Production", "PTP Synchronization"],
+    beats: ["Broadcast Engineering", "Studio Modernization", "IP Transition"],
+    bioFr: "Ingénieure en chef des systèmes de télédiffusion IP au Centre de radiodiffusion de Toronto. Experte de la transition des studios traditionnels vers les normes SMPTE 2110.",
+    bioEn: "Lead broadcast systems engineer at CBC Toronto. Champion of SMPTE ST 2110 IP video infrastructure and control room modernizations.",
+    projects: ["CBC Toronto ST 2110 Master Control Upgrade", "Remote Production Integration (REMI)", "National Router Architecture"],
+    tools: ["Evertz EXE", "Lawo VSM", "Grass Valley AMPP", "Tektronix Prism"],
+    confluenceLinks: [
+      { title: "CBC ST 2110 Standards & IP Video Routing Specification", url: "https://confluence.cbcrc.ca/display/ENG/SMPTE+ST2110+Standards" }
+    ],
+    updatedAt: "2026-08-25T16:00:00Z"
+  },
+  {
+    id: "ti-004",
+    name: "David Morin",
+    title: "Spécialiste Dalet & Systèmes de Production de Nouvelles",
+    titleEn: "Dalet & News Production Systems Specialist",
+    division: "ti",
+    department: "Solutions de Rédaction & MAM",
+    bureau: "Montréal",
+    locationDetail: "Maison de Radio-Canada",
+    email: "david.morin@radio-canada.ca",
+    teamsId: "david.morin@radio-canada.ca",
+    language: "fr",
+    skills: ["Dalet Galaxy", "MAM (Media Asset Management)", "iNews", "Intégration NRCS", "Stockage centralisé", "Workflow Nouvelles"],
+    beats: ["Newsroom Systems", "Asset Management", "Broadcast CMS"],
+    bioFr: "Expert référence pour l'écosystème Dalet Galaxy et les flux de travail de la salle des nouvelles radio et télé. Assure la liaison entre les équipes éditoriales et l'ingénierie.",
+    bioEn: "Key specialist for Dalet Galaxy MAM and newsroom workflows across television and radio newsrooms.",
+    projects: ["Mise à niveau Dalet Galaxy Five", "Archivage automatisé vers le Cloud", "Optimisation des stations régionales"],
+    tools: ["Dalet Galaxy", "Avid iNews", "Quantum StorNext", "MediaFlex"],
+    confluenceLinks: [
+      { title: "Guide de référence Dalet Galaxy & Dépannage MAM", url: "https://confluence.cbcrc.ca/display/NEWS/Dalet+Galaxy+MAM+Runbook" }
+    ],
+    updatedAt: "2026-08-20T09:00:00Z"
+  },
+  {
+    id: "ti-005",
+    name: "Elena Rostova",
+    title: "Lead AI & Data Scientist",
+    titleEn: "Lead AI & Data Scientist",
+    division: "ti",
+    department: "Data & Digital Intelligence",
+    bureau: "Toronto",
+    locationDetail: "Canadian Broadcasting Centre / Remote",
+    email: "elena.rostova@cbc.ca",
+    teamsId: "elena.rostova@cbc.ca",
+    language: "en",
+    skills: ["Artificial Intelligence", "Machine Learning", "NLP", "Recommendation Engines", "LLMs", "Algorithmes de recommandation", "Éthique de l'IA"],
+    beats: ["Generative AI", "Content Discovery", "Data Science"],
+    bioFr: "Scientifique de données principale. Conçoit les algorithmes de recommandation pour Radio-Canada OHdio et CBC Gem avec une rigueur sur la diversité des contenus et l'éthique de l'IA.",
+    bioEn: "Lead data scientist responsible for content discovery and recommendation engines across CBC Gem and digital portals, emphasizing public broadcaster algorithmic ethics.",
+    projects: ["Public Service Recommendation Framework", "Metadata Auto-tagging with NLP", "Semantic Audio Search"],
+    tools: ["Python", "PyTorch", "Hugging Face", "Snowflake", "Databricks"],
+    confluenceLinks: [
+      { title: "Algorithmes de Recommandation & Cadre Éthique IA", url: "https://confluence.cbcrc.ca/display/DATA/Public+Service+Algorithms" },
+      { title: "Spécifications Auto-tagging NLP & Entraînement", url: "https://confluence.cbcrc.ca/display/DATA/NLP+Metadata+Pipeline" }
+    ],
+    updatedAt: "2026-09-01T13:45:00Z"
+  },
+  {
+    id: "ti-006",
+    name: "Jean-Philippe Côté",
+    title: "Directeur Cybersécurité & Gouvernance IT",
+    titleEn: "Director, Cybersecurity & IT Governance",
+    division: "ti",
+    department: "Sécurité de l'information & Risques",
+    bureau: "Montréal",
+    locationDetail: "Maison de Radio-Canada",
+    email: "jean-philippe.cote@radio-canada.ca",
+    teamsId: "jean-philippe.cote@radio-canada.ca",
+    language: "bilingual",
+    skills: ["Cybersécurité", "Cybersecurity", "Zero Trust", "Gestion des incidents", "SOC", "Conformité", "Protection des sources journalistiques", "Sécurité Cloud"],
+    beats: ["Information Security", "Source Protection", "Threat Intelligence"],
+    bioFr: "Spécialiste de la sécurité des infrastructures de diffusion et de la protection numérique des journalistes et sources confidentielles. Pilote le centre des opérations de sécurité (SOC).",
+    bioEn: "Specialist in broadcast system hardening, enterprise zero-trust security, and digital safety for journalists and confidential investigative sources.",
+    projects: ["Implémentation Zero-Trust CBC/RC", "Ateliers sécurité numérique pour correspondants étrangers", "Plan de continuité en cas de rançongiciel"],
+    tools: ["CrowdStrike", "Microsoft Sentinel", "Splunk", "Signal Protocol", "Okta"],
+    confluenceLinks: [
+      { title: "Directives de Cybersécurité & Protection Numérique des Journalistes", url: "https://confluence.cbcrc.ca/display/SEC/Journalist+Security+Handbook" },
+      { title: "Protocole de Signalement d'Incidents de Sécurité SOC", url: "https://confluence.cbcrc.ca/display/SEC/Incident+Response+Protocol" }
+    ],
+    updatedAt: "2026-09-06T10:20:00Z"
+  },
+  {
+    id: "ti-007",
+    name: "Luc Bergeron",
+    title: "Chef d'équipe Transmission & Réseaux Émetteurs",
+    titleEn: "Team Lead, Transmission & Transmitter Networks",
+    division: "ti",
+    department: "Transmission & Distribution Terrestre",
+    bureau: "Montréal",
+    locationDetail: "Tour du Mont-Royal & Réseau National",
+    email: "luc.bergeron@radio-canada.ca",
+    teamsId: "luc.bergeron@radio-canada.ca",
+    language: "fr",
+    skills: ["Émetteurs FM / DTV", "Transmission hertzienne", "Antennes & Pylônes", "Réglementation CRTC & ISED", "Télémesure", "Secours d'urgence"],
+    beats: ["Over-the-Air Transmission", "Emergency Broadcasting", "RF Engineering"],
+    bioFr: "Spécialiste de l'infrastructure de transmission hertzienne (FM et télévision numérique) à travers le Canada. Gestionnaire des sites d'émetteurs critiques et des réseaux d'alerte d'urgence.",
+    bioEn: "RF engineering leader overseeing the nationwide transmitter network for OTA TV and FM radio, including emergency broadcasting alert integration.",
+    projects: ["Repackage spectral ISED", "Mise à niveau de la télémétrie des sites isolés", "Système d'alerte en cas de crise majeure"],
+    tools: ["Rohde & Schwarz Tx", "Burk Technology Telemetry", "SpectraVue", "Nautel"],
+    confluenceLinks: [
+      { title: "Répertoire des Sites Émetteurs Nationaux & Télémétrie", url: "https://confluence.cbcrc.ca/display/TRANS/National+Transmitter+Registry" }
+    ],
+    updatedAt: "2026-08-14T15:30:00Z"
+  },
+  {
+    id: "ti-008",
+    name: "Priya Sharma",
+    title: "Senior Product Manager - Digital Audio & Podcasts",
+    titleEn: "Senior Product Manager - Digital Audio & Podcasts",
+    division: "ti",
+    department: "Digital Products (Audio & Music)",
+    bureau: "Toronto",
+    locationDetail: "Canadian Broadcasting Centre",
+    email: "priya.sharma@cbc.ca",
+    teamsId: "priya.sharma@cbc.ca",
+    language: "en",
+    skills: ["Product Strategy", "Digital Audio", "CBC Listen", "Podcasting", "Mobile Apps", "Streaming Audio", "Analytics", "UX Research"],
+    beats: ["Audio Tech", "Podcast Distribution", "Mobile Experience"],
+    bioFr: "Cheffe de produit principale pour les applications audio numériques (CBC Listen). Spécialiste de la distribution de balados, de la mesure d'audience et de l'écoute personnalisée.",
+    bioEn: "Senior Product Manager leading CBC Listen and podcast digital delivery platforms. Focused on high-engagement audio experiences and RSS podcast distribution.",
+    projects: ["CBC Listen Mobile App Redesign", "Dynamic Audio Insertion (DAI)", "Podcast Analytics Platform"],
+    tools: ["Amplitude", "Jira", "Figma", "Triton Digital", "Apple Podcasts Connect"],
+    confluenceLinks: [
+      { title: "CBC Listen Product Roadmap & Podcast Distribution Spec", url: "https://confluence.cbcrc.ca/display/AUDIO/CBC+Listen+Roadmap" }
+    ],
+    updatedAt: "2026-08-27T09:40:00Z"
+  },
+  {
+    id: "ti-009",
+    name: "François Desjardins",
+    title: "Chef de pratique DevSecOps & Automatisation Cloud",
+    titleEn: "Practice Lead, DevSecOps & Cloud Automation",
+    division: "ti",
+    department: "Ingénierie & Plateformes",
+    bureau: "Montréal",
+    locationDetail: "Maison de Radio-Canada",
+    email: "francois.desjardins@radio-canada.ca",
+    teamsId: "francois.desjardins@radio-canada.ca",
+    language: "bilingual",
+    skills: ["DevSecOps", "CI/CD", "GitLab CI", "Terraform", "Docker", "Sécurité applicative", "Kubernetes", "AWS IAM"],
+    beats: ["Infrastructure as Code", "Continuous Delivery", "Cloud Security"],
+    bioFr: "Responsable de l'automatisation des déploiements et des pratiques DevSecOps pour l'ensemble des équipes de développement web et mobile de Radio-Canada.",
+    bioEn: "Practice lead for CI/CD pipelines, container orchestration, and security-as-code across digital engineering teams.",
+    projects: ["Pipeline CI/CD unifié GitLab", "Automatisation multi-comptes AWS", "Scan de vulnérabilités automatisé"],
+    tools: ["GitLab CI", "Terraform", "Kubernetes", "SonarQube", "Snyk"],
+    confluenceLinks: [
+      { title: "Standards CI/CD & Déploiements Multi-Cloud GitLab", url: "https://confluence.cbcrc.ca/display/DEVOPS/CI+CD+Standards" }
+    ],
+    updatedAt: "2026-08-22T08:30:00Z"
+  },
+  {
+    id: "ti-010",
+    name: "Anouk Pelletier",
+    title: "Cheffe de produit CMS & Outils de Publication Web",
+    titleEn: "Product Manager, CMS & Digital Publishing Tools",
+    division: "ti",
+    department: "Outils Éditoriaux Numériques",
+    bureau: "Montréal",
+    locationDetail: "Maison de Radio-Canada",
+    email: "anouk.pelletier@radio-canada.ca",
+    teamsId: "anouk.pelletier@radio-canada.ca",
+    language: "fr",
+    skills: ["CMS", "Gestion de contenu", "Publication Web", "SEO", "Édition en direct", "Outils de Rédaction", "UX Journalistique"],
+    beats: ["Digital Publishing", "Newsroom Tooling", "Content Systems"],
+    bioFr: "Pilote le développement du système de gestion de contenu (CMS) utilisé quotidiennement par les journalistes web et pupitres d'information de Radio-Canada.ca.",
+    bioEn: "Leads the evolution of the web content management system (CMS) serving digital journalists and regional bureaus across Radio-Canada.ca.",
+    projects: ["Refonte du pupitre de publication en direct (Live Blog)", "Intégration des métadonnées SEO avancées", "Module de publication multi-plateforme"],
+    tools: ["Custom Headless CMS", "GraphQL", "Figma", "Jira", "Optimizely"],
+    confluenceLinks: [
+      { title: "Documentation Utilisateur CMS Radio-Canada.ca", url: "https://confluence.cbcrc.ca/display/CMS/User+Guide" }
+    ],
+    updatedAt: "2026-08-29T15:00:00Z"
+  },
+  {
+    id: "ti-011",
+    name: "Patrick Drolet",
+    title: "Architecte Réseaux & Télécommunications IP",
+    titleEn: "Network & Telecom Architect",
+    division: "ti",
+    department: "Réseaux & Télécommunications",
+    bureau: "Montréal",
+    locationDetail: "Maison de Radio-Canada",
+    email: "patrick.drolet@radio-canada.ca",
+    teamsId: "patrick.drolet@radio-canada.ca",
+    language: "bilingual",
+    skills: ["Cisco", "Arista", "SD-WAN", "Réseau de diffusion", "BGP", "QoS Audio/Vidéo", "Interconnexion des stations régionales"],
+    beats: ["Telecom Infrastructure", "Media Networks", "Broadband Connectivity"],
+    bioFr: "Architecte des réseaux dorsaux reliant la Maison de Radio-Canada, le Centre de Toronto et toutes les stations régionales d'un océan à l'autre. Expert en qualité de service (QoS) média.",
+    bioEn: "Core network architect managing high-bandwidth WAN and SD-WAN links between national production centres and regional broadcasting stations.",
+    projects: ["Réseau média ultra-faible latence ST 2110", "Modernisation SD-WAN des stations régionales", "Interconnexions Cloud Direct Connect"],
+    tools: ["Arista CloudVision", "Cisco Catalyst", "Wireshark", "ThousandEyes"],
+    confluenceLinks: [
+      { title: "Topologie Réseau & Schémas d'Interconnexion Média", url: "https://confluence.cbcrc.ca/display/NET/Media+Network+Topology" }
+    ],
+    updatedAt: "2026-08-19T11:20:00Z"
+  },
+  {
+    id: "ti-012",
+    name: "Sameer Patel",
+    title: "Principal Solutions Architect - Core Digital Services",
+    titleEn: "Principal Solutions Architect - Core Digital Services",
+    division: "ti",
+    department: "Digital Architecture & Core Platforms",
+    bureau: "Toronto",
+    locationDetail: "Canadian Broadcasting Centre",
+    email: "sameer.patel@cbc.ca",
+    teamsId: "sameer.patel@cbc.ca",
+    language: "en",
+    skills: ["Software Architecture", "Microservices", "API Management", "Identity (SSO)", "Kafka", "Scalability", "Event-Driven Architecture"],
+    beats: ["Enterprise Architecture", "API Strategy", "Single Sign-On"],
+    bioFr: "Architecte de solutions principal supervisant les API centrales, la gestion d'identité des membres (SSO Radio-Canada/CBC) et les flux événementiels Kafka.",
+    bioEn: "Principal architect driving API design, member account single-sign-on (SSO), and event-driven architectures across digital products.",
+    projects: ["Unified CBC/RC Member Identity Service", "Enterprise GraphQL Gateway", "Real-Time Streaming Telemetry"],
+    tools: ["Apache Kafka", "Apollo GraphQL", "Okta", "Node.js", "Redis"],
+    confluenceLinks: [
+      { title: "CBC/Radio-Canada Unified SSO & Identity Architecture", url: "https://confluence.cbcrc.ca/display/ARCH/Member+SSO+Spec" }
+    ],
+    updatedAt: "2026-08-24T14:10:00Z"
+  },
+  {
+    id: "ti-013",
+    name: "Alexandre Viau",
+    title: "Spécialiste Automatisation Régie & Systèmes Evertz",
+    titleEn: "Control Room Automation & Evertz Specialist",
+    division: "ti",
+    department: "Technologies de Production Studio",
+    bureau: "Montréal",
+    locationDetail: "Maison de Radio-Canada",
+    email: "alexandre.viau@radio-canada.ca",
+    teamsId: "alexandre.viau@radio-canada.ca",
+    language: "fr",
+    skills: ["Automatisation de régie", "Evertz", "Mosart", "Sony Switchers", "Mélangeurs vidéo", "Robots caméras", "Production automatisée"],
+    beats: ["Newsroom Automation", "Studio Control", "Live Switching"],
+    bioFr: "Spécialiste de pointe des systèmes d'automatisation de régie de nouvelles (Mosart/Evertz). Assure la configuration des macros de production pour Le Téléjournal et RDI.",
+    bioEn: "Specialist in control room automation and vision switchers. Configures automated rundown triggering and camera robotics for flagship live news.",
+    projects: ["Automatisation régie RDI 24/7", "Intégration rundown Dalet avec Mosart", "Transition régie 4K"],
+    tools: ["Viz Mosart", "Evertz Magnum", "Sony XVS", "Ross Video OverDrive"],
+    confluenceLinks: [
+      { title: "Guide de Configuration Régie Automatisée Mosart", url: "https://confluence.cbcrc.ca/display/STUDIO/Mosart+Configuration" }
+    ],
+    updatedAt: "2026-08-16T17:00:00Z"
+  },
+  {
+    id: "ti-014",
+    name: "Michelle Wong",
+    title: "Quality Assurance & Test Automation Lead",
+    titleEn: "Quality Assurance & Test Automation Lead",
+    division: "ti",
+    department: "Digital QA & Device Labs",
+    bureau: "Toronto",
+    locationDetail: "Canadian Broadcasting Centre",
+    email: "michelle.wong@cbc.ca",
+    teamsId: "michelle.wong@cbc.ca",
+    language: "en",
+    skills: ["QA Automation", "Cypress", "Playwright", "Mobile Testing", "Accessibility (WCAG)", "Smart TV Testing", "Performance Testing"],
+    beats: ["Software Quality", "Accessibility", "Multi-Device Testing"],
+    bioFr: "Responsable des tests automatisés et des normes d'accessibilité (WCAG 2.1 AA) pour les applications CBC Gem, TOU.TV et les plateformes connectées (Roku, AppleTV).",
+    bioEn: "Leads automated end-to-end testing and digital accessibility compliance across web, iOS, Android, and Connected TV devices.",
+    projects: ["Automated OTT Testing Lab", "WCAG 2.1 AAA Accessibility Initiative", "Continuous Performance Regression Benchmarking"],
+    tools: ["Playwright", "BrowserStack", "Appium", "Lighthouse", "Jira"],
+    confluenceLinks: [
+      { title: "Digital Accessibility & WCAG Testing Guidelines", url: "https://confluence.cbcrc.ca/display/QA/Accessibility+Testing+Guidelines" }
+    ],
+    updatedAt: "2026-08-18T10:15:00Z"
+  },
+
+  // =========================================================================
+  // 2. INFORMATION, RÉDACTION & BUREAUX RÉGIONAUX/INTERNATIONAUX (EDITORIAL)
+  // =========================================================================
+  {
+    id: "ed-101",
+    name: "Gérald Fillion",
+    title: "Journaliste & Spécialiste de l'économie",
+    titleEn: "Senior Business & Economics Journalist / Host",
+    division: "editorial",
+    department: "Information Radio-Canada (RDI & Radio)",
+    bureau: "Montréal",
+    locationDetail: "Maison de Radio-Canada",
+    email: "gerald.fillion@radio-canada.ca",
+    teamsId: "gerald.fillion@radio-canada.ca",
+    language: "bilingual",
+    skills: ["Économie", "Banque du Canada", "Taux d'intérêt", "Inflation", "Finances publiques", "Commerce international", "Marchés boursiers"],
+    beats: ["Économie canadienne et mondiale", "Immobilier", "Budget fédéral & provincial", "Politique monétaire"],
+    bioFr: "Journaliste émérite et animateur spécialisé en affaires économiques et financières. Analyse rigoureuse des politiques monétaires, de l'inflation, du coût de la vie et des finances d'État.",
+    bioEn: "Prominent business and economic analyst and host. In-depth coverage of Bank of Canada interest rate decisions, global markets, and fiscal policy.",
+    projects: ["Zone Économie (RDI)", "Couverture budgétaire annuelle", "Série balado sur les crises financières"],
+    tools: ["Bloomberg Terminal", "StatCan API", "Refinitiv"],
+    confluenceLinks: [
+      { title: "Guide de Couverture Électorale & Fiches Budgétaires", url: "https://confluence.cbcrc.ca/display/INFO/Budget+Coverage+Guide" }
+    ],
+    updatedAt: "2026-09-02T16:20:00Z"
+  },
+  {
+    id: "ed-102",
+    name: "Rosemary Barton",
+    title: "Chief Political Correspondent",
+    titleEn: "Chief Political Correspondent",
+    division: "editorial",
+    department: "CBC Parliamentary Bureau",
+    bureau: "Ottawa",
+    locationDetail: "Parliamentary Press Gallery (National Press Building)",
+    email: "rosemary.barton@cbc.ca",
+    teamsId: "rosemary.barton@cbc.ca",
+    language: "bilingual",
+    skills: ["Federal Politics", "Parliamentary Affairs", "House of Commons", "Elections", "Cabinet Policy", "Constitutional Law", "Diplomacy"],
+    beats: ["Canadian Federal Politics", "Elections Coverage", "Prime Minister & Cabinet", "Intergovernmental Affairs"],
+    bioFr: "Correspondante politique en chef pour CBC News à Ottawa. Couvre la politique fédérale, les délibérations de la Chambre des communes et les relations intergouvernementales.",
+    bioEn: "CBC News Chief Political Correspondent based in Ottawa. Decades of experience leading national election night broadcasts, interviewing party leaders, and analyzing parliamentary policy.",
+    projects: ["Rosemary Barton Live", "Federal Election Specials", "At Issue Panel"],
+    tools: ["iNews", "CPAC feed", "House of Commons Hansard"],
+    confluenceLinks: [],
+    updatedAt: "2026-09-04T12:00:00Z"
+  },
+  {
+    id: "ed-103",
+    name: "Thomas Gerbet",
+    title: "Journaliste d'enquête - Environnement & Politiques publiques",
+    titleEn: "Investigative Reporter - Environment & Public Policy",
+    division: "editorial",
+    department: "Bureau d'enquête Radio-Canada",
+    bureau: "Montréal",
+    locationDetail: "Maison de Radio-Canada",
+    email: "thomas.gerbet@radio-canada.ca",
+    teamsId: "thomas.gerbet@radio-canada.ca",
+    language: "fr",
+    skills: ["Journalisme d'enquête", "Environnement", "Changements climatiques", "Accès à l'information (CAI / ATI)", "Analyse de données", "Énergie propre"],
+    beats: ["Climat & Biodiversité", "Gestion des déchets & Recyclage", "Transparence gouvernementale"],
+    bioFr: "Journaliste d'enquête chevronné récompensé pour ses révélations sur la gestion des matières résiduelles, les crédits carbone, les dépassements de coûts et la transparence gouvernementale.",
+    bioEn: "Award-winning investigative reporter focusing on environmental issues, public accountability, access-to-information requests, and natural resource governance.",
+    projects: ["Enquêtes sur le recyclage du plastique au Québec", "Subventions aux énergies fossiles", "Qualité de l'eau potable"],
+    tools: ["Excel / OpenRefine", "Demandes d'accès à l'information", "Python scraping"],
+    confluenceLinks: [
+      { title: "Base de Connaissance Accès à l'Information (ATI/CAI)", url: "https://confluence.cbcrc.ca/display/ENQUETE/ATI+Knowledge+Base" }
+    ],
+    updatedAt: "2026-08-26T14:40:00Z"
+  },
+  {
+    id: "ed-104",
+    name: "Jorge Barrera",
+    title: "Senior Investigative Reporter - Indigenous Affairs",
+    titleEn: "Senior Investigative Reporter - Indigenous Affairs",
+    division: "editorial",
+    department: "CBC Indigenous / Investigative Unit",
+    bureau: "Ottawa",
+    locationDetail: "Ottawa Bureau / National Desk",
+    email: "jorge.barrera@cbc.ca",
+    teamsId: "jorge.barrera@cbc.ca",
+    language: "en",
+    skills: ["Indigenous Affairs", "First Nations", "Treaty Rights", "Crown-Indigenous Relations", "Investigative Reporting", "Land Claims", "Reconciliation"],
+    beats: ["Indigenous Rights", "Federal Governance", "Historical Injustices", "Resource Extraction on Indigenous Lands"],
+    bioFr: "Grand reporter d'enquête sur les affaires autochtones. Couvre les traités, les droits ancestraux, les revendications territoriales et les politiques fédérales liées aux Premières Nations.",
+    bioEn: "Nationally recognized investigative reporter dedicated to Indigenous affairs, treaty rights, governance, and accountability in First Nations, Inuit, and Métis communities.",
+    projects: ["In-depth series on residential school archives", "Water quality in remote First Nations", "Mining claims on traditional territories"],
+    tools: ["Court records", "Historical archives", "DocumentCloud"],
+    confluenceLinks: [],
+    updatedAt: "2026-08-23T11:00:00Z"
+  },
+  {
+    id: "ed-105",
+    name: "Christine Birak",
+    title: "Senior Health & Science Reporter",
+    titleEn: "Senior Health & Science Reporter",
+    division: "editorial",
+    department: "CBC National News / Health Unit",
+    bureau: "Toronto",
+    locationDetail: "Canadian Broadcasting Centre",
+    email: "christine.birak@cbc.ca",
+    teamsId: "christine.birak@cbc.ca",
+    language: "en",
+    skills: ["Health Journalism", "Public Health", "Epidemiology", "Pharmaceuticals", "Medical Research", "Mental Health", "Hospital Systems"],
+    beats: ["Public Health Policy", "Emerging Diseases", "Healthcare Infrastructure", "Medical Innovations"],
+    bioFr: "Journaliste principale santé et sciences pour CBC. Spécialiste des systèmes hospitaliers, de la santé publique, de la recherche biomédicale et de la réglementation pharmaceutique.",
+    bioEn: "Senior health and medical journalist for CBC National News, specializing in public health policy, epidemiological analysis, and medical research breakthroughs.",
+    projects: ["Coverage of global health emergencies", "Healthcare staffing crisis investigations", "Pediatric medicine special series"],
+    tools: ["PubMed", "CIHI databases", "Health Canada registry"],
+    confluenceLinks: [],
+    updatedAt: "2026-08-17T09:15:00Z"
+  },
+  {
+    id: "ed-106",
+    name: "Yanik Dumont-Baron",
+    title: "Chef de bureau international & Affaires étrangères",
+    titleEn: "Foreign Bureau Chief & Geopolitics Correspondent",
+    division: "editorial",
+    department: "Information Internationale Radio-Canada",
+    bureau: "Montréal",
+    locationDetail: "Bureaux internationaux / Maison de Radio-Canada",
+    email: "yanik.dumont-baron@radio-canada.ca",
+    teamsId: "yanik.dumont-baron@radio-canada.ca",
+    language: "bilingual",
+    skills: ["Géopolitique", "Affaires étrangères", "Zones de conflit", "Diplomatie internationale", "OTAN / ONU", "Sécurité globale", "Reportage de terrain"],
+    beats: ["Conflits internationaux", "Politique européenne", "Relations Canada-États-Unis-Chine"],
+    bioFr: "Correspondant chevronné à l'étranger ayant dirigé des bureaux à Paris, Washington et sur les zones de crise majeures. Analyse géopolitique approfondie des relations multilatérales.",
+    bioEn: "Veteran international correspondent and former foreign bureau chief with extensive on-the-ground experience in conflict zones, multilateral diplomacy, and global geopolitics.",
+    projects: ["Couverture de la guerre en Ukraine", "Élections présidentielles américaines", "Sommets du G7 et de l'OTAN"],
+    tools: ["Téléphones satellites", "Cartographie géopolitique", "Traduction multilingue"],
+    confluenceLinks: [],
+    updatedAt: "2026-08-31T15:50:00Z"
+  },
+  {
+    id: "ed-107",
+    name: "Adrienne Arsenault",
+    title: "Chief Correspondent & Host, The National",
+    titleEn: "Chief Correspondent & Host, The National",
+    division: "editorial",
+    department: "CBC National News",
+    bureau: "Toronto",
+    locationDetail: "Canadian Broadcasting Centre",
+    email: "adrienne.arsenault@cbc.ca",
+    teamsId: "adrienne.arsenault@cbc.ca",
+    language: "bilingual",
+    skills: ["Broadcast Journalism", "The National", "International Conflict", "Breaking News", "In-depth Interviews", "War Reporting", "Human Rights"],
+    beats: ["National Affairs", "World News", "Investigative Journalism"],
+    bioFr: "Correspondante en chef de CBC News et animatrice principale de The National. Journaliste lauréate de nombreux prix internationaux (Emmy) pour ses reportages en zones de conflit.",
+    bioEn: "CBC News Chief Correspondent and host of The National. Multiple Emmy-winning journalist with extensive background reporting from disaster and conflict zones across the globe.",
+    projects: ["The National Flagship Broadcast", "Investigative reporting from crisis zones", "Prime Ministerial interviews"],
+    tools: ["iNews", "Satellite broadcast links", "Avid MediaCentral"],
+    confluenceLinks: [],
+    updatedAt: "2026-09-03T18:00:00Z"
+  },
+  {
+    id: "ed-108",
+    name: "Patrice Roy",
+    title: "Chef d'antenne - Le Téléjournal & En direct avec Patrice Roy",
+    titleEn: "Chief Anchor & Political Decrypter",
+    division: "editorial",
+    department: "Information Radio-Canada (Télévision)",
+    bureau: "Montréal",
+    locationDetail: "Maison de Radio-Canada",
+    email: "patrice.roy@radio-canada.ca",
+    teamsId: "patrice.roy@radio-canada.ca",
+    language: "fr",
+    skills: ["Chef d'antenne", "Politique québécoise", "Politique fédérale", "Animation en direct", "Débats des chefs", "Éditorial", "Grandes entrevues"],
+    beats: ["Actualité politique", "Élections Québec & Canada", "Affaires publiques"],
+    bioFr: "Figure incontournable de l'information à Radio-Canada. Anime Le Téléjournal 18h et En direct avec Patrice Roy sur RDI. Maître d'œuvre des soirées électorales et débats nationaux.",
+    bioEn: "Flagship anchor of Le Téléjournal (Montreal) and En direct sur RDI. Central figure in Quebec and Canadian national election broadcasts and high-profile political debates.",
+    projects: ["Animation des débats des chefs fédéraux et provinciaux", "Soirées électorales nationales", "En direct avec Patrice Roy"],
+    tools: ["Dalet Galaxy", "Téléprompteur", "Régie de direct"],
+    confluenceLinks: [],
+    updatedAt: "2026-09-04T17:30:00Z"
+  },
+  {
+    id: "ed-109",
+    name: "Marie-Maude Denis",
+    title: "Animatrice & Journaliste d'enquête - Émission Enquête",
+    titleEn: "Host & Senior Investigative Reporter - Enquête",
+    division: "editorial",
+    department: "Bureau d'enquête Radio-Canada",
+    bureau: "Montréal",
+    locationDetail: "Maison de Radio-Canada",
+    email: "marie-maude.denis@radio-canada.ca",
+    teamsId: "marie-maude.denis@radio-canada.ca",
+    language: "bilingual",
+    skills: ["Journalisme d'enquête", "Crime organisé", "Corruption", "Col blanc", "Protection des sources", "Affaires judiciaires", "Enquêtes publiques"],
+    beats: ["Intégrité publique", "Contrats d'État", "Système judiciaire", "Commission Charbonneau"],
+    bioFr: "Journaliste d'enquête d'élite et animatrice de l'émission phare Enquête. Connue pour ses révélations majeures sur la collusion, le blanchiment d'argent et l'intégrité de la vie publique.",
+    bioEn: "Host and veteran reporter for Radio-Canada's premier investigative show Enquête. Nationally acclaimed for exposing organized crime infiltration and political corruption.",
+    projects: ["Enquêtes sur les contrats publics et le crime organisé", "Défense juridique du secret des sources (Cour suprême)", "Émission Enquête"],
+    tools: ["ProtonMail", "Signal", "Registres d'entreprises", "Documents judiciaires"],
+    confluenceLinks: [],
+    updatedAt: "2026-08-28T14:10:00Z"
+  },
+  {
+    id: "ed-110",
+    name: "Ian Hanomansing",
+    title: "Host, The National & Cross Country Checkup",
+    titleEn: "Host, The National & Cross Country Checkup",
+    division: "editorial",
+    department: "CBC News / National Radio",
+    bureau: "Vancouver",
+    locationDetail: "CBC Vancouver Broadcast Centre (700 Hamilton St)",
+    email: "ian.hanomansing@cbc.ca",
+    teamsId: "ian.hanomansing@cbc.ca",
+    language: "en",
+    skills: ["Broadcast Hosting", "Cross Country Checkup", "National Dialogue", "Western Canada Issues", "Law & Justice", "Radio Phone-in", "Live Television"],
+    beats: ["Western Canada Perspectives", "National Call-in Debates", "Federal Policy Impact"],
+    bioFr: "Animateur chevronné basé à Vancouver. Co-anime The National et anime Cross Country Checkup sur CBC Radio One, la tribune téléphonique nationale d'affaires publiques.",
+    bioEn: "Veteran broadcaster and host based in Vancouver. Anchors The National and hosts Cross Country Checkup, Canada's national open-line radio forum on CBC Radio One.",
+    projects: ["Cross Country Checkup live nationwide broadcasts", "Coverage of BC wildfire seasons and climate crisis", "Western Canadian economic panels"],
+    tools: ["Radio phone-in console", "iNews", "Dalet audio"],
+    confluenceLinks: [],
+    updatedAt: "2026-08-21T13:25:00Z"
+  },
+  {
+    id: "ed-111",
+    name: "Valérie Ouellet",
+    title: "Journaliste principale de données (Data Journalism Unit)",
+    titleEn: "Senior Data Journalist (CBC Investigative & Data Unit)",
+    division: "editorial",
+    department: "CBC Data & Investigative Unit",
+    bureau: "Toronto",
+    locationDetail: "Canadian Broadcasting Centre",
+    email: "valerie.ouellet@cbc.ca",
+    teamsId: "valerie.ouellet@cbc.ca",
+    language: "bilingual",
+    skills: ["Data Journalism", "Python", "SQL", "Analyse statistique", "R", "Visualisation de données", "Web Scraping", "Access to Information"],
+    beats: ["Data-driven Investigations", "Algorithmic Accountability", "Health Data", "Housing & Real Estate Data"],
+    bioFr: "Journaliste de données principale au sein de l'unité d'enquête de CBC. Experte de l'extraction de bases de données massives, de l'analyse statistique et des visualisations interactives.",
+    bioEn: "Senior data journalist leading major investigations using code, open data, and statistical analysis. Pioneer in algorithmic accountability reporting across Canada.",
+    projects: ["National rental pricing investigation", "Analysis of healthcare wait-time datasets", "Algorithmic bias in mortgage approvals"],
+    tools: ["Python (pandas/matplotlib)", "R / tidyverse", "SQL / PostgreSQL", "Observable", "QGIS"],
+    confluenceLinks: [
+      { title: "CBC Data Journalism Playbook & Open Data Catalogs", url: "https://confluence.cbcrc.ca/display/DATA/Data+Journalism+Playbook" }
+    ],
+    updatedAt: "2026-08-29T11:00:00Z"
+  },
+  {
+    id: "ed-112",
+    name: "Alec Castonguay",
+    title: "Chef de bureau politique & Animateur (Les coulisses du pouvoir)",
+    titleEn: "Chief Political Bureau / Host (Les coulisses du pouvoir)",
+    division: "editorial",
+    department: "Information Radio-Canada (Ottawa / Québec)",
+    bureau: "Ottawa",
+    locationDetail: "Bureau parlementaire de la Colline",
+    email: "alec.castonguay@radio-canada.ca",
+    teamsId: "alec.castonguay@radio-canada.ca",
+    language: "bilingual",
+    skills: ["Analyse politique", "Colline parlementaire", "Partis politiques", "Gouvernance", "Sondages", "Coulisses du pouvoir", "Politique étrangère canadienne"],
+    beats: ["Politique fédérale", "Stratégie électorale", "Politique Québec-Canada"],
+    bioFr: "Chef de bureau et animateur de l'émission Les coulisses du pouvoir sur ICI RDI et Radio. Spécialiste de l'analyse des stratégies électorales, des sondages et des coulisses gouvernementales.",
+    bioEn: "Host of Les coulisses du pouvoir on ICI RDI. Renowned political analyst providing deep context into party strategy, cabinet deliberations, and Canadian governance.",
+    projects: ["Les coulisses du pouvoir", "Couverture des congrès d'investiture", "Panels d'analyse électorale"],
+    tools: ["Hansard", "Données électorales", "iNews"],
+    confluenceLinks: [],
+    updatedAt: "2026-08-25T14:30:00Z"
+  },
+  {
+    id: "ed-113",
+    name: "Paul Hunter",
+    title: "Senior Foreign Correspondent (Washington Bureau)",
+    titleEn: "Senior Foreign Correspondent (Washington Bureau)",
+    division: "editorial",
+    department: "CBC News International",
+    bureau: "Ottawa",
+    locationDetail: "CBC Washington Bureau / National Desk",
+    email: "paul.hunter@cbc.ca",
+    teamsId: "paul.hunter@cbc.ca",
+    language: "en",
+    skills: ["US Politics", "White House", "Capitol Hill", "US Supreme Court", "Canada-US Relations", "Cross-Border Trade", "Diplomacy"],
+    beats: ["American Politics", "Presidential Elections", "Canada-US Trade Agreements"],
+    bioFr: "Correspondant senior aux États-Unis. Couvre la Maison-Blanche, le Congrès américain et les enjeux transfrontaliers majeurs (tarifs douaniers, frontière, sécurité continentale).",
+    bioEn: "Senior Washington correspondent for CBC News. Decades covering the US presidency, Supreme Court rulings, congressional battles, and Canada-US trade relations.",
+    projects: ["US Presidential Election campaigns", "Congressional impeachment trials", "Canada-US border policy coverage"],
+    tools: ["Washington Press Corps wire", "Live U mobile units", "iNews"],
+    confluenceLinks: [],
+    updatedAt: "2026-08-20T16:45:00Z"
+  },
+  {
+    id: "ed-114",
+    name: "Brodie Fenlon",
+    title: "Directeur Général & Rédacteur en Chef, CBC News",
+    titleEn: "General Manager & Editor in Chief, CBC News",
+    division: "editorial",
+    department: "CBC News Leadership",
+    bureau: "Toronto",
+    locationDetail: "Canadian Broadcasting Centre",
+    email: "brodie.fenlon@cbc.ca",
+    teamsId: "brodie.fenlon@cbc.ca",
+    language: "en",
+    skills: ["Editorial Leadership", "Journalistic Standards and Practices", "Ethics", "Newsroom Strategy", "Digital Transformation", "Press Freedom", "Crisis Editorial"],
+    beats: ["Journalistic Standards", "Public Trust", "Newsroom Governance"],
+    bioFr: "Rédacteur en chef et directeur général de CBC News. Responsable de la ligne éditoriale, du respect des Normes et pratiques journalistiques (NPJ) et de la stratégie numérique.",
+    bioEn: "General Manager and Editor in Chief of CBC News. Oversees national and regional newsrooms across television, radio, and digital platforms, safeguarding journalistic trust and standards.",
+    projects: ["Journalistic Standards and Practices revision", "Trust in News initiatives", "Digital-first newsroom transition"],
+    tools: ["JSP Guidelines", "Omniture / Chartbeat", "Editorial Planning Systems"],
+    confluenceLinks: [
+      { title: "CBC News Journalistic Standards and Practices (JSP)", url: "https://confluence.cbcrc.ca/display/NEWS/JSP+Guidelines" }
+    ],
+    updatedAt: "2026-09-01T10:00:00Z"
+  },
+  {
+    id: "ed-115",
+    name: "Johanne Lapierre",
+    title: "Rédactrice en chef, Radio-Canada Info",
+    titleEn: "Editor in Chief, Radio-Canada Info",
+    division: "editorial",
+    department: "Direction de l'Information Radio-Canada",
+    bureau: "Montréal",
+    locationDetail: "Maison de Radio-Canada",
+    email: "johanne.lapierre@radio-canada.ca",
+    teamsId: "johanne.lapierre@radio-canada.ca",
+    language: "fr",
+    skills: ["Direction éditoriale", "Normes journalistiques", "Information continue (RDI)", "Numérique", "Coordination des bureaux", "Grandes couvertures", "Gestion de crise"],
+    beats: ["Gouvernance de l'information", "Éthique journalistique", "Stratégie de couverture"],
+    bioFr: "Rédactrice en chef de Radio-Canada Info. Coordonne la stratégie de couverture de l'actualité sur le web, à la télévision (Le Téléjournal, RDI) et à la radio (ICI Première).",
+    bioEn: "Editor in Chief of Radio-Canada Info. Leads overall news coverage across television, radio, and digital channels, ensuring ethical compliance and journalistic rigor.",
+    projects: ["Intégration multi-plateforme de la salle des nouvelles", "Couverture en continu des crises majeures", "Normes et pratiques journalistiques"],
+    tools: ["Dalet Galaxy", "Planning éditorial", "Table d'affectation nationale"],
+    confluenceLinks: [
+      { title: "Lignes Directrices de la Rédaction Radio-Canada Info", url: "https://confluence.cbcrc.ca/display/INFO/Editorial+Guidelines" }
+    ],
+    updatedAt: "2026-09-03T11:15:00Z"
+  },
+  {
+    id: "ed-116",
+    name: "Matt Galloway",
+    title: "Host, The Current (CBC Radio One)",
+    titleEn: "Host, The Current (CBC Radio One)",
+    division: "editorial",
+    department: "CBC Radio Current Affairs",
+    bureau: "Toronto",
+    locationDetail: "Canadian Broadcasting Centre",
+    email: "matt.galloway@cbc.ca",
+    teamsId: "matt.galloway@cbc.ca",
+    language: "en",
+    skills: ["Audio Longform", "The Current", "Current Affairs", "International Interviews", "Social Justice", "Urban Affairs", "Community Engagement"],
+    beats: ["National & Global Current Affairs", "In-depth Interviews", "Social Policy"],
+    bioFr: "Animateur de The Current, l'émission matinale phare d'affaires publiques de CBC Radio One. Réputé pour ses entrevues percutantes avec des décideurs et témoins de l'actualité.",
+    bioEn: "Host of CBC Radio One's flagship morning current affairs show The Current. Renowned for compelling interviews exploring the human and political dimensions of daily news.",
+    projects: ["The Current daily broadcast", "Special town halls on affordable housing", "Interviews with world figures and Nobel laureates"],
+    tools: ["Dalet audio", "Radio studios", "ISDN / Comrex IP audio"],
+    confluenceLinks: [],
+    updatedAt: "2026-08-26T15:30:00Z"
+  },
+  {
+    id: "ed-117",
+    name: "Raphaël Bouvier-Auclair",
+    title: "Correspondant parlementaire à Ottawa",
+    titleEn: "Parliamentary Correspondent in Ottawa",
+    division: "editorial",
+    department: "Information Radio-Canada (Ottawa)",
+    bureau: "Ottawa",
+    locationDetail: "Bureau de la Colline parlementaire",
+    email: "raphael.bouvier-auclair@radio-canada.ca",
+    teamsId: "raphael.bouvier-auclair@radio-canada.ca",
+    language: "bilingual",
+    skills: ["Affaires parlementaires", "Législation fédérale", "Diplomatie", "Défense nationale", "Commissions parlementaires", "Immigration"],
+    beats: ["Politique fédérale", "Affaires mondiales Canada", "Sécurité nationale"],
+    bioFr: "Correspondant parlementaire rigoureux suivant quotidiennement les travaux de la Chambre des communes, la politique étrangère et les dossiers d'immigration.",
+    bioEn: "Parliamentary reporter tracking federal legislation, foreign affairs, defense procurement, and immigration policies on the Hill.",
+    projects: ["Suivi des réformes de l'immigration", "Couverture de la politique étrangère canadienne", "Débats en Chambre"],
+    tools: ["Hansard", "CPAC", "iNews"],
+    confluenceLinks: [],
+    updatedAt: "2026-08-22T12:00:00Z"
+  },
+
+  // =========================================================================
+  // 3. JURIDIQUE, ARCHIVES, OPÉRATIONS DE PRODUCTION & CORPORATIF (CORPORATE)
+  // =========================================================================
+  {
+    id: "corp-201",
+    name: "Me Alexandre Gagnon",
+    title: "Conseiller Juridique Principal - Droits d'auteur & Réglementation",
+    titleEn: "Senior Legal Counsel - Copyright & Regulatory",
+    division: "corporate",
+    department: "Affaires Juridiques & Secrétariat Général",
+    bureau: "Montréal",
+    locationDetail: "Maison de Radio-Canada",
+    email: "alexandre.gagnon@radio-canada.ca",
+    teamsId: "alexandre.gagnon@radio-canada.ca",
+    language: "bilingual",
+    skills: ["Droit des médias", "Droits d'auteur", "CRTC", "Loi sur la radiodiffusion (C-11)", "Propriété intellectuelle", "Contrats de coproduction", "Liberté de presse"],
+    beats: ["Media Law", "Regulatory Compliance", "Broadcasting Act", "Copyright in AI"],
+    bioFr: "Avocat principal spécialisé en réglementation de la radiodiffusion, obligations CRTC, loi C-11 et droits d'auteur appliqués aux nouveaux modèles numériques et à l'IA.",
+    bioEn: "Senior in-house counsel advising on Canadian broadcast regulations (CRTC, Bill C-11), IP rights, fair dealing, and copyright liabilities regarding AI training data.",
+    projects: ["Mise en conformité Loi sur la diffusion continue en ligne (C-11)", "Politique d'utilisation de l'IA générative", "Litiges sur le droit de citation"],
+    tools: ["CanLII", "CRTC Decisions database", "LexisNexis"],
+    confluenceLinks: [
+      { title: "Directives Loi C-11 (Diffusion continue) & Obligations CRTC", url: "https://confluence.cbcrc.ca/display/LEGAL/CRTC+Bill+C11+Guidelines" },
+      { title: "Politique d'utilisation de l'IA et Droits d'Auteur", url: "https://confluence.cbcrc.ca/display/LEGAL/AI+Copyright+Policy" }
+    ],
+    updatedAt: "2026-08-31T14:15:00Z"
+  },
+  {
+    id: "corp-202",
+    name: "Karen MacIntyre",
+    title: "Director of Archives & Media Documentation",
+    titleEn: "Director of Archives & Media Documentation",
+    division: "corporate",
+    department: "Media Archives & Heritage",
+    bureau: "Toronto",
+    locationDetail: "Canadian Broadcasting Centre",
+    email: "karen.macintyre@cbc.ca",
+    teamsId: "karen.macintyre@cbc.ca",
+    language: "bilingual",
+    skills: ["Archivistique", "Digital Preservation", "Heritage Assets", "Metadata Standards", "Preservation Audio/Vidéo", "Droit de réutilisation d'archives", "Numérisation"],
+    beats: ["Media Preservation", "Historical Assets", "Archive Licensing"],
+    bioFr: "Directrice des archives historiques et des collections audiovisuelles de Radio-Canada / CBC. Spécialiste de la numérisation des supports physiques et des métadonnées pérennes.",
+    bioEn: "Director of historical archives and audiovisual collections. Expert in analog preservation, digital archiving strategies, and metadata curation for 85+ years of broadcast heritage.",
+    projects: ["Projet national de numérisation des bandes magnétiques 2 pouces", "Indexation sémantique des archives sonores", "Partenariats avec Bibliothèque et Archives Canada"],
+    tools: ["ArchivesSpace", "Dublin Core", "Tape Restoration Units", "OpenText"],
+    confluenceLinks: [
+      { title: "Politique Nationale de Numérisation & Conservation des Archives", url: "https://confluence.cbcrc.ca/display/ARCH/Digitization+Policy" }
+    ],
+    updatedAt: "2026-08-15T11:00:00Z"
+  },
+  {
+    id: "corp-203",
+    name: "Martin Bélanger",
+    title: "Chef des opérations de régie & Production studio",
+    titleEn: "Head of Studio Production Operations",
+    division: "corporate",
+    department: "Opérations de Production & Moyens Techniques",
+    bureau: "Montréal",
+    locationDetail: "Maison de Radio-Canada",
+    email: "martin.belanger@radio-canada.ca",
+    teamsId: "martin.belanger@radio-canada.ca",
+    language: "fr",
+    skills: ["Régie de production", "Studios TV", "Caméras robotisées", "Planification des moyens techniques", "Production en direct", "Équipements scéniques"],
+    beats: ["Studio Operations", "Live Broadcast Facilities", "Resource Allocation"],
+    bioFr: "Gestionnaire des opérations techniques des plateaux et régies de la nouvelle Maison de Radio-Canada. Coordonne les ressources humaines et technologiques pour les émissions phares.",
+    bioEn: "Head of technical facilities and live control rooms at the new Maison de Radio-Canada, coordinating crew and studio technology for flagship broadcasts.",
+    projects: ["Transition vers les studios 4K/HDR de la nouvelle Maison", "Automatisation des caméras de plateau", "Optimisation des régies polyvalentes"],
+    tools: ["ScheduALL / Xytech", "Sony HDC Cameras", "Vinten Robotics"],
+    confluenceLinks: [
+      { title: "Guide d'Utilisation des Régies Studio MRC & Protocoles", url: "https://confluence.cbcrc.ca/display/PROD/Studio+Operations+Guide" }
+    ],
+    updatedAt: "2026-08-20T10:45:00Z"
+  },
+  {
+    id: "corp-204",
+    name: "Scott Russell",
+    title: "Senior Sports Broadcaster & Olympic Host",
+    titleEn: "Senior Sports Broadcaster & Olympic Host",
+    division: "corporate",
+    department: "CBC Sports / Olympic Programming",
+    bureau: "Toronto",
+    locationDetail: "Canadian Broadcasting Centre",
+    email: "scott.russell@cbc.ca",
+    teamsId: "scott.russell@cbc.ca",
+    language: "bilingual",
+    skills: ["Sports Journalism", "Olympics / Paralympics", "Amateur Sports", "Sports Governance", "Anti-doping (WADA)", "Live Sports Hosting", "Canadian Athletes"],
+    beats: ["Olympic Games", "Paralympic Games", "Canadian Amateur Athletics", "Sports Integrity"],
+    bioFr: "Animateur et journaliste émérite de CBC Sports. A couvert 16 Jeux Olympiques. Spécialiste de l'éthique sportive, des programmes de soutien aux athlètes canadiens et de l'olympisme.",
+    bioEn: "Iconic Canadian sports broadcaster who has anchored 16 Olympic Games for CBC. Champion of amateur athletics, Paralympians, and international sports governance.",
+    projects: ["CBC Olympic Prime Time Broadcasts", "Road to the Olympic Games", "Coverage of the World Athletics Championships"],
+    tools: ["Sports Graphics (Chyron)", "Live stats feeds", "Sports archive databases"],
+    confluenceLinks: [],
+    updatedAt: "2026-08-18T13:30:00Z"
+  },
+  {
+    id: "corp-205",
+    name: "Claudine Bérubé",
+    title: "Gestionnaire principale - Droits de diffusion & Musique",
+    titleEn: "Senior Manager - Music & Broadcast Licensing",
+    division: "corporate",
+    department: "Gestion des Droits & Licences Média",
+    bureau: "Montréal",
+    locationDetail: "Maison de Radio-Canada",
+    email: "claudine.berube@radio-canada.ca",
+    teamsId: "claudine.berube@radio-canada.ca",
+    language: "fr",
+    skills: ["SOCAN", "Ententes collectives", "Droits musicaux", "Licences de synchronisation", "Droit de reproduction", "Audio numérique", "Gestion de contrats"],
+    beats: ["Music Licensing", "Collective Agreements", "Streaming Royalties"],
+    bioFr: "Experte des ententes collectives de redevances musicales (SOCAN, Re:Sound, SOPROQ) pour les émissions télé, radio et le streaming sur TOU.TV et OHdio.",
+    bioEn: "Specialist in music licensing and royalty compliance across broadcast and streaming platforms, managing clearance with collective rights societies.",
+    projects: ["Négociation des tarifs de diffusion en ligne", "Système automatisé de déclaration musicale", "Gestion des banques musicales de production"],
+    tools: ["SoundExchange", "SOCAN portal", "CueSheet manager"],
+    confluenceLinks: [
+      { title: "Barèmes de Déclaration SOCAN & Musique de Production", url: "https://confluence.cbcrc.ca/display/RIGHTS/Music+Licensing+Rules" }
+    ],
+    updatedAt: "2026-08-24T09:00:00Z"
+  },
+  {
+    id: "corp-206",
+    name: "Sophie Durocher-Lavoie",
+    title: "Conseillère aux Normes & Pratiques Journalistiques (NPJ)",
+    titleEn: "Advisor, Journalistic Standards and Practices (JSP)",
+    division: "corporate",
+    department: "Bureau de l'Ombudsman & Normes Journalistiques",
+    bureau: "Ottawa",
+    locationDetail: "Centre national / Ottawa",
+    email: "sophie.durocher-lavoie@radio-canada.ca",
+    teamsId: "sophie.durocher-lavoie@radio-canada.ca",
+    language: "bilingual",
+    skills: ["Normes journalistiques (NPJ)", "Éthique des médias", "Traitement des plaintes", "Impartialité", "Conflits d'intérêts", "Droit de réplique"],
+    beats: ["Journalistic Ethics", "Public Accountability", "Ombudsman Cases"],
+    bioFr: "Conseille les rédactions et répond aux questions éthiques entourant l'impartialité, la vérification des faits, l'utilisation de caméras cachées et les plaintes du public.",
+    bioEn: "Advises newsrooms on ethical standards, conflict-of-interest guidelines, fairness, and public accountability compliance.",
+    projects: ["Mise à jour des guides éthiques sur les réseaux sociaux", "Formations NPJ pour les nouvelles recrues", "Rapports annuels sur les plaintes"],
+    tools: ["NPJ Handbook", "Case management database", "Ombudsman portal"],
+    confluenceLinks: [
+      { title: "Guide des Normes et Pratiques Journalistiques (NPJ) en Ligne", url: "https://confluence.cbcrc.ca/display/NPJ/Handbook" }
+    ],
+    updatedAt: "2026-09-02T10:15:00Z"
+  },
+  {
+    id: "corp-207",
+    name: "Robert Picard",
+    title: "Directeur des Opérations - Sports & Événements Spéciaux",
+    titleEn: "Director of Operations - Sports & Special Events",
+    division: "corporate",
+    department: "Opérations de Production Extérieure",
+    bureau: "Montréal",
+    locationDetail: "Maison de Radio-Canada",
+    email: "robert.picard@radio-canada.ca",
+    teamsId: "robert.picard@radio-canada.ca",
+    language: "bilingual",
+    skills: ["Cars régie (Mobiles)", "Production extérieure", "REMI", "Liaisons satellite & fibre", "Grandes retransmissions", "Gestion logistique", "Jeux Olympiques"],
+    beats: ["Mobile Production", "Outside Broadcast (OB)", "Remote Production (REMI)"],
+    bioFr: "Pilote les moyens techniques mobiles (cars régie HD/4K) lors des grands événements sportifs, galas culturels (ADISQ, Gémeaux) et déploiements en direct hors studio.",
+    bioEn: "Leads outside broadcast (OB) fleets and remote production logistics for major sports events, cultural galas, and live on-location broadcasts.",
+    projects: ["Déploiement technique Jeux Olympiques", "Gestion de la flotte des cars régie 4K", "Refonte des kits légers de reportage direct"],
+    tools: ["ScheduALL", "LiveU Central", "Haivision Makito", "Régies Mobiles"],
+    confluenceLinks: [
+      { title: "Guide Technique Déploiement des Régies Mobiles 4K", url: "https://confluence.cbcrc.ca/display/MOBILE/OB+Van+Deployment+Guide" }
+    ],
+    updatedAt: "2026-08-27T16:20:00Z"
+  }
+];
+
+
+/**
+ * Bilingual Semantic Search & Ranking Engine for CBC / Radio-Canada SME Finder
+ */
+
+// Bilingual thesaurus mapping French and English terms, abbreviations, and related concepts
+const SYNONYM_MAP = {
+  // Technology & Digital
+  "ai": ["ia", "intelligence artificielle", "artificial intelligence", "machine learning", "apprentissage automatique", "llm", "nlp", "genai", "data science"],
+  "ia": ["ai", "intelligence artificielle", "artificial intelligence", "machine learning", "apprentissage automatique", "llm", "nlp", "genai"],
+  "cloud": ["nuage", "aws", "azure", "kubernetes", "devops", "cdn", "streaming", "ott", "infrastructure"],
+  "nuage": ["cloud", "aws", "azure", "kubernetes", "devops", "cdn", "streaming", "ott"],
+  "streaming": ["diffusion continue", "ott", "tou.tv", "cbc gem", "ohdio", "hls", "dash", "video delivery", "cdn"],
+  "broadcast": ["radiodiffusion", "télédiffusion", "diffusion", "transmission", "émetteur", "rf", "st 2110", "sdi"],
+  "diffusion": ["broadcast", "broadcasting", "transmission", "émetteur", "rf", "st 2110", "distribution"],
+  "trint": ["transcription", "stt", "speech to text", "sous-titrage", "captioning", "workflow"],
+  "transcription": ["trint", "stt", "speech to text", "sous-titres", "subtitles", "captioning"],
+  "dalet": ["mam", "inews", "galaxy", "nrcs", "media asset management", "salle des nouvelles", "newsroom"],
+  "mam": ["dalet", "media asset management", "archivage", "ingestion", "asset management"],
+  "cyber": ["cybersécurité", "cybersecurity", "sécurité", "security", "zero trust", "soc", "rançongiciel", "ransomware", "infosec"],
+  "cybersécurité": ["cyber", "cybersecurity", "sécurité", "security", "zero trust", "soc", "infosec"],
+  "cybersecurity": ["cyber", "cybersécurité", "sécurité", "security", "zero trust", "soc", "infosec"],
+
+  // Editorial & News
+  "politique": ["politics", "parliament", "parlement", "colline", "chambre des communes", "house of commons", "elections", "gouvernement", "cabinet"],
+  "politics": ["politique", "parliament", "parlement", "hill", "house of commons", "elections", "government", "cabinet"],
+  "economie": ["economy", "business", "finances", "inflation", "taux", "banque du canada", "bank of canada", "bourse", "marches"],
+  "economy": ["economie", "affaires", "finances", "inflation", "interest rates", "bank of canada", "markets", "gdp"],
+  "climat": ["climate", "environnement", "environment", "biodiversite", "carbone", "rechauffement", "transition energetique", "energie"],
+  "climate": ["climat", "environment", "environnement", "carbon", "global warming", "energy transition", "biodiversity"],
+  "sante": ["health", "medical", "hopital", "hopitaux", "medecine", "epidemiologie", "sante publique", "pharma"],
+  "health": ["sante", "medical", "hospital", "medicine", "public health", "epidemiology", "healthcare"],
+  "autochtone": ["indigenous", "first nations", "premieres nations", "inuit", "metis", "traites", "treaties", "reconciliation"],
+  "indigenous": ["autochtone", "first nations", "premieres nations", "inuit", "metis", "treaty", "reconciliation"],
+  "international": ["geopolitique", "geopolitics", "foreign", "etranger", "otan", "nato", "onu", "conflit", "diplomatie"],
+  "enquete": ["investigation", "investigative", "acces a l'information", "ati", "foi", "transparence", "whistleblower"],
+  "investigative": ["enquete", "investigation", "access to information", "ati", "accountability"],
+
+  // Corporate & Legal
+  "droit": ["legal", "avocat", "lawyer", "droits d'auteur", "copyright", "crtc", "c-11", "reglementation", "propriete intellectuelle"],
+  "legal": ["droit", "law", "copyright", "droits d'auteur", "crtc", "c-11", "regulatory", "intellectual property"],
+  "crtc": ["reglementation", "broadcasting act", "loi sur la radiodiffusion", "c-11", "conformite", "telecom"],
+  "archives": ["documentation", "patrimoine", "preservation", "numerisation", "digitization", "history", "heritage"]
+};
+
+/**
+ * Strips accents, lowercases, and removes punctuation for clean fuzzy comparison
+ */
+function normalizeText(str) {
+  if (!str) return "";
+  return str
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^\w\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+/**
+ * Expands a search query into an array of search tokens and known bilingual synonyms
+ */
+function expandQuery(queryString) {
+  const normalized = normalizeText(queryString);
+  if (!normalized) return { tokens: [], synonyms: [] };
+
+  const tokens = normalized.split(" ").filter(t => t.length > 1);
+  const synonyms = new Set();
+
+  // Check individual tokens
+  tokens.forEach(token => {
+    if (SYNONYM_MAP[token]) {
+      SYNONYM_MAP[token].forEach(syn => synonyms.add(normalizeText(syn)));
+    }
+  });
+
+  // Also check full phrase in synonym map
+  if (SYNONYM_MAP[normalized]) {
+    SYNONYM_MAP[normalized].forEach(syn => synonyms.add(normalizeText(syn)));
+  }
+
+  return {
+    raw: queryString,
+    tokens,
+    synonyms: Array.from(synonyms)
+  };
+}
+
+/**
+ * Calculates a match score for a given SME against query tokens and synonyms
+ */
+function scoreExpert(expert, queryInfo) {
+  if (queryInfo.tokens.length === 0) return { score: 1, matchedFields: [] };
+
+  let score = 0;
+  const matchedFields = [];
+
+  const nameNorm = normalizeText(expert.name);
+  const titleFrNorm = normalizeText(expert.title);
+  const titleEnNorm = normalizeText(expert.titleEn);
+  const deptNorm = normalizeText(expert.department);
+  const bureauNorm = normalizeText(expert.bureau);
+  const bioFrNorm = normalizeText(expert.bioFr);
+  const bioEnNorm = normalizeText(expert.bioEn);
+  const skillsNorm = (expert.skills || []).map(s => normalizeText(s));
+  const beatsNorm = (expert.beats || []).map(b => normalizeText(b));
+  const projectsNorm = (expert.projects || []).map(p => normalizeText(p));
+  const toolsNorm = (expert.tools || []).map(t => normalizeText(t));
+
+  // 1. Check primary search tokens
+  queryInfo.tokens.forEach(token => {
+    // Exact name match
+    if (nameNorm.includes(token)) {
+      score += 50;
+      matchedFields.push("name");
+    }
+    // Job title match
+    if (titleFrNorm.includes(token) || titleEnNorm.includes(token)) {
+      score += 35;
+      matchedFields.push("title");
+    }
+    // Direct skill tag match
+    skillsNorm.forEach(skill => {
+      if (skill.includes(token)) {
+        score += 25;
+        matchedFields.push("skills");
+      }
+    });
+    // Beat topic match
+    beatsNorm.forEach(beat => {
+      if (beat.includes(token)) {
+        score += 30;
+        matchedFields.push("beats");
+      }
+    });
+    // Department / Bureau match
+    if (deptNorm.includes(token) || bureauNorm.includes(token)) {
+      score += 15;
+      matchedFields.push("department");
+    }
+    // Project or tool match
+    projectsNorm.forEach(proj => {
+      if (proj.includes(token)) {
+        score += 15;
+        matchedFields.push("projects");
+      }
+    });
+    toolsNorm.forEach(tool => {
+      if (tool.includes(token)) {
+        score += 20;
+        matchedFields.push("tools");
+      }
+    });
+    // Confluence doc match
+    const confluenceNorm = (expert.confluenceLinks || []).map(c => normalizeText(`${c.title || ''} ${c.url || ''}`));
+    confluenceNorm.forEach(doc => {
+      if (doc.includes(token)) {
+        score += 20;
+        matchedFields.push("documentation / confluence");
+      }
+    });
+    // Bio match
+    if (bioFrNorm.includes(token) || bioEnNorm.includes(token)) {
+      score += 10;
+      matchedFields.push("bio");
+    }
+  });
+
+  // 2. Check bilingual synonyms & semantic expansions
+  queryInfo.synonyms.forEach(synonym => {
+    const synTokens = synonym.split(" ");
+    synTokens.forEach(synToken => {
+      if (synToken.length < 3) return;
+
+      skillsNorm.forEach(skill => {
+        if (skill.includes(synToken)) {
+          score += 15;
+          matchedFields.push("skills (synonym)");
+        }
+      });
+      beatsNorm.forEach(beat => {
+        if (beat.includes(synToken)) {
+          score += 18;
+          matchedFields.push("beats (synonym)");
+        }
+      });
+      if (titleFrNorm.includes(synToken) || titleEnNorm.includes(synToken)) {
+        score += 15;
+        matchedFields.push("title (synonym)");
+      }
+      if (bioFrNorm.includes(synToken) || bioEnNorm.includes(synToken)) {
+        score += 8;
+        matchedFields.push("bio (synonym)");
+      }
+    });
+  });
+
+  return {
+    score,
+    matchedFields: [...new Set(matchedFields)]
+  };
+}
+
+/**
+ * Searches and filters experts list with criteria
+ */
+function searchExperts(experts, criteria = {}) {
+  const {
+    query = "",
+    division = "all",
+    language = "all",
+    bureau = "all",
+    tag = ""
+  } = criteria;
+
+  const queryInfo = expandQuery(query);
+
+  let results = experts.map(expert => {
+    const { score, matchedFields } = scoreExpert(expert, queryInfo);
+    return {
+      expert,
+      score,
+      matchedFields
+    };
+  });
+
+  // If there is a text query, filter by score > 0
+  if (queryInfo.tokens.length > 0) {
+    results = results.filter(r => r.score > 0);
+  }
+
+  // Filter by division (ti, editorial, corporate)
+  if (division && division !== "all") {
+    results = results.filter(r => r.expert.division === division);
+  }
+
+  // Filter by language (fr, en, bilingual)
+  if (language && language !== "all") {
+    results = results.filter(r => {
+      if (r.expert.language === "bilingual") return true;
+      return r.expert.language === language;
+    });
+  }
+
+  // Filter by bureau/location
+  if (bureau && bureau !== "all") {
+    results = results.filter(r => r.expert.bureau.toLowerCase() === bureau.toLowerCase());
+  }
+
+  // Filter by specific skill/beat tag
+  if (tag) {
+    const normTag = normalizeText(tag);
+    results = results.filter(r => {
+      const skills = (r.expert.skills || []).map(normalizeText);
+      const beats = (r.expert.beats || []).map(normalizeText);
+      return skills.some(s => s.includes(normTag)) || beats.some(b => b.includes(normTag));
+    });
+  }
+
+  // Sort descending by score, then alphabetically by name
+  results.sort((a, b) => {
+    if (b.score !== a.score) return b.score - a.score;
+    return a.expert.name.localeCompare(b.expert.name);
+  });
+
+  return results.map(r => r.expert);
+}
+
+/**
+ * Helper to highlight query words inside text snippets
+ */
+function highlightMatch(text, query) {
+  if (!text || !query) return text || "";
+  const queryInfo = expandQuery(query);
+  if (queryInfo.tokens.length === 0) return text;
+
+  const allWords = [...queryInfo.tokens, ...queryInfo.synonyms].filter(w => w.length > 2);
+  if (allWords.length === 0) return text;
+
+  const regex = new RegExp(`(${allWords.map(w => w.replace(/[.*+?^${}()|[\]\\]/g, '\\<script type="module" src="./js/app.js"></script>')).join("|")})`, "gi");
+  return text.replace(regex, `<mark class="bg-amber-100 text-amber-900 px-0.5 rounded font-medium">$1</mark>`);
+}
+
+
+/**
+ * Storage & Data Persistence Layer for CBC / Radio-Canada SME Finder
+ * Local-first, privacy-compliant: keeps all data strictly in the user's browser.
+ */
+
+
+const STORAGE_KEY = "cbc_rc_sme_database_v3";
+
+/**
+ * Loads experts from LocalStorage, falling back to default seed data
+ */
+function loadExperts() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
+      }
+    } else {
+      // Check if user had custom entries in v2 or v1
+      const oldRaw = localStorage.getItem("cbc_rc_sme_database_v2") || localStorage.getItem("cbc_rc_sme_database_v1");
+      if (oldRaw) {
+        try {
+          const oldParsed = JSON.parse(oldRaw);
+          const customUserEntries = oldParsed.filter(e => e.id && (e.id.startsWith("sme-") || e.id.startsWith("imported-") || e.id.startsWith("doc-")));
+          const combined = [...SEED_EXPERTS, ...customUserEntries];
+          saveExperts(combined);
+          return combined;
+        } catch (e) {
+          console.warn("Could not migrate previous entries", e);
+        }
+      }
+    }
+  } catch (e) {
+    console.warn("Error reading from localStorage, using seed data", e);
+  }
+  // Initialize with expanded seed data
+  saveExperts(SEED_EXPERTS);
+  return [...SEED_EXPERTS];
+}
+
+/**
+ * Saves experts array to LocalStorage
+ */
+function saveExperts(experts) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(experts));
+    return true;
+  } catch (e) {
+    console.error("Error saving to localStorage", e);
+    return false;
+  }
+}
+
+/**
+ * Resets database back to default initial seed data
+ */
+function resetToSeedData() {
+  saveExperts(SEED_EXPERTS);
+  return [...SEED_EXPERTS];
+}
+
+/**
+ * Adds or updates an expert
+ */
+function upsertExpert(expert) {
+  const list = loadExperts();
+  const index = list.findIndex(e => e.id === expert.id);
+  if (index >= 0) {
+    list[index] = { ...list[index], ...expert, updatedAt: new Date().toISOString() };
+  } else {
+    const newExpert = {
+      ...expert,
+      id: expert.id || `sme-${Date.now()}`,
+      createdAt: new Date().toISOString()
+    };
+    list.unshift(newExpert);
+  }
+  saveExperts(list);
+  return list;
+}
+
+/**
+ * Deletes an expert by ID
+ */
+function deleteExpert(id) {
+  const list = loadExperts();
+  const filtered = list.filter(e => e.id !== id);
+  saveExperts(filtered);
+  return filtered;
+}
+
+/**
+ * Exports current database as a downloadable JSON file
+ */
+function exportToJSON(experts) {
+  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(experts, null, 2));
+  const downloadAnchor = document.createElement('a');
+  downloadAnchor.setAttribute("href", dataStr);
+  downloadAnchor.setAttribute("download", `cbc-radio-canada-sme-directory-${new Date().toISOString().slice(0,10)}.json`);
+  document.body.appendChild(downloadAnchor);
+  downloadAnchor.click();
+  downloadAnchor.remove();
+}
+
+/**
+ * Exports current database as a downloadable CSV file
+ */
+function exportToCSV(experts) {
+  const headers = ["Name", "Title (FR)", "Title (EN)", "Division", "Department", "Bureau", "Email", "Language", "Skills", "Beats"];
+  const rows = experts.map(e => [
+    `"${(e.name || "").replace(/"/g, '""')}"`,
+    `"${(e.title || "").replace(/"/g, '""')}"`,
+    `"${(e.titleEn || "").replace(/"/g, '""')}"`,
+    `"${(e.division || "").replace(/"/g, '""')}"`,
+    `"${(e.department || "").replace(/"/g, '""')}"`,
+    `"${(e.bureau || "").replace(/"/g, '""')}"`,
+    `"${(e.email || "").replace(/"/g, '""')}"`,
+    `"${(e.language || "").replace(/"/g, '""')}"`,
+    `"${(e.skills || []).join("; ").replace(/"/g, '""')}"`,
+    `"${(e.beats || []).join("; ").replace(/"/g, '""')}"`
+  ]);
+
+  const csvContent = "data:text/csv;charset=utf-8,\uFEFF" + [headers.join(","), ...rows.map(r => r.join(","))].join("\n");
+  const downloadAnchor = document.createElement('a');
+  downloadAnchor.setAttribute("href", encodeURI(csvContent));
+  downloadAnchor.setAttribute("download", `cbc-radio-canada-sme-directory-${new Date().toISOString().slice(0,10)}.csv`);
+  document.body.appendChild(downloadAnchor);
+  downloadAnchor.click();
+  downloadAnchor.remove();
+}
+
+
+/**
+ * Data Ingestion & Importer for CBC / Radio-Canada SME Finder
+ * Supports CSV/TSV, JSON, and Unstructured Document/Note Ingestion.
+ */
+
+// Common keywords to auto-detect expertise from internal documents
+const TOPIC_KEYWORDS = [
+  { tag: "Trint / Transcription", patterns: ["trint", "transcription", "sous-titrage", "speech-to-text"] },
+  { tag: "Cloud & Streaming", patterns: ["cloud", "aws", "streaming", "ott", "tou.tv", "cbc gem", "cdn", "hls", "dash"] },
+  { tag: "Dalet & Newsroom Systems", patterns: ["dalet", "inews", "mam", "nrcs", "media asset"] },
+  { tag: "Artificial Intelligence (AI/IA)", patterns: ["ia", "ai", "intelligence artificielle", "machine learning", "nlp", "llm", "recommandation"] },
+  { tag: "Cybersécurité", patterns: ["cyber", "cybersécurité", "cybersecurity", "zero trust", "soc", "sécurité"] },
+  { tag: "Broadcast & Transmission", patterns: ["smpte", "st 2110", "émetteur", "transmission", "hertzien", "rf", "pylône", "sdi"] },
+  { tag: "Federal Politics", patterns: ["colline", "parlement", "parliament", "chambre des communes", "house of commons", "elections", "cabinet"] },
+  { tag: "Économie & Finances", patterns: ["banque du canada", "bank of canada", "inflation", "taux d'intérêt", "bourse", "budget", "économie"] },
+  { tag: "Environnement & Climat", patterns: ["climat", "changement climatique", "biodiversité", "carbone", "recyclage", "environnement"] },
+  { tag: "Affaires Autochtones", patterns: ["autochtone", "indigenous", "first nations", "premières nations", "inuit", "métis", "traités"] },
+  { tag: "Santé & Sciences", patterns: ["santé", "health", "médical", "hôpital", "santé publique", "épidémiologie"] },
+  { tag: "Droit & Réglementation", patterns: ["crtc", "loi c-11", "droits d'auteur", "copyright", "juridique", "réglementation"] }
+];
+
+/**
+ * Parses CSV or TSV string into an array of SME objects
+ */
+function parseCSV(csvText) {
+  const lines = csvText.split(/\r?\n/).filter(line => line.trim().length > 0);
+  if (lines.length < 2) {
+    throw new Error("Le fichier doit contenir au moins une ligne d'en-tête et une ligne de données.");
+  }
+
+  // Detect delimiter (, or \t or ;)
+  const headerLine = lines[0];
+  let delimiter = ",";
+  if (headerLine.includes("\t")) delimiter = "\t";
+  else if (headerLine.includes(";") && !headerLine.includes(",")) delimiter = ";";
+
+  const headers = splitRow(headerLine, delimiter).map(h => h.trim().toLowerCase());
+
+  // Map header indices
+  const colMap = {
+    name: findColIndex(headers, ["name", "nom", "employe", "employee", "contact"]),
+    title: findColIndex(headers, ["title", "titre", "poste", "position", "role"]),
+    titleEn: findColIndex(headers, ["titleen", "titre_en", "english title", "title (en)"]),
+    division: findColIndex(headers, ["division", "secteur", "branche", "unit"]),
+    department: findColIndex(headers, ["department", "département", "departement", "service", "équipe", "team"]),
+    bureau: findColIndex(headers, ["bureau", "location", "ville", "city", "lieu"]),
+    email: findColIndex(headers, ["email", "courriel", "mail", "e-mail"]),
+    phone: findColIndex(headers, ["phone", "téléphone", "telephone", "cell", "tel"]),
+    language: findColIndex(headers, ["language", "langue", "lang"]),
+    skills: findColIndex(headers, ["skills", "compétences", "competences", "expertise", "spécialités"]),
+    beats: findColIndex(headers, ["beats", "sujets", "dossiers", "topics", "coverage"])
+  };
+
+  if (colMap.name === -1 && colMap.email === -1) {
+    throw new Error("Impossible de trouver une colonne 'Nom' ou 'Email' dans le fichier.");
+  }
+
+  const results = [];
+
+  for (let i = 1; i < lines.length; i++) {
+    const row = splitRow(lines[i], delimiter);
+    if (row.length === 0 || (row.length === 1 && !row[0].trim())) continue;
+
+    const name = colMap.name >= 0 ? row[colMap.name] : "";
+    const email = colMap.email >= 0 ? row[colMap.email] : "";
+
+    if (!name && !email) continue;
+
+    const skillsRaw = colMap.skills >= 0 ? row[colMap.skills] : "";
+    const beatsRaw = colMap.beats >= 0 ? row[colMap.beats] : "";
+
+    // Normalize division
+    let division = "ti";
+    const divRaw = (colMap.division >= 0 ? row[colMap.division] : "").toLowerCase();
+    if (divRaw.includes("edit") || divRaw.includes("info") || divRaw.includes("nouv") || divRaw.includes("news")) {
+      division = "editorial";
+    } else if (divRaw.includes("corp") || divRaw.includes("jur") || divRaw.includes("legal") || divRaw.includes("rh") || divRaw.includes("admin")) {
+      division = "corporate";
+    }
+
+    // Normalize language
+    let language = "bilingual";
+    const langRaw = (colMap.language >= 0 ? row[colMap.language] : "").toLowerCase();
+    if (langRaw === "fr" || langRaw.includes("franc") || langRaw.includes("french")) language = "fr";
+    else if (langRaw === "en" || langRaw.includes("angl") || langRaw.includes("english")) language = "en";
+
+    results.push({
+      id: `imported-${Date.now()}-${i}`,
+      name: name.trim() || email.split("@")[0].replace(".", " "),
+      title: colMap.title >= 0 ? row[colMap.title].trim() : "Spécialiste",
+      titleEn: colMap.titleEn >= 0 ? row[colMap.titleEn].trim() : (colMap.title >= 0 ? row[colMap.title].trim() : "Specialist"),
+      division,
+      department: colMap.department >= 0 ? row[colMap.department].trim() : "CBC / Radio-Canada",
+      bureau: colMap.bureau >= 0 && row[colMap.bureau].trim() ? row[colMap.bureau].trim() : "Montréal",
+      email: email.trim(),
+      phone: colMap.phone >= 0 ? row[colMap.phone].trim() : "",
+      teamsId: email.trim(),
+      language,
+      skills: splitTags(skillsRaw),
+      beats: splitTags(beatsRaw),
+      bioFr: "",
+      bioEn: "",
+      projects: [],
+      tools: []
+    });
+  }
+
+  return results;
+}
+
+/**
+ * Parses unstructured document text (meeting notes, intranet clippings, beat sheets)
+ * to automatically extract contacts, emails, and suggested skills.
+ */
+function parseUnstructuredDocument(text) {
+  if (!text || text.trim().length === 0) return [];
+
+  const candidates = [];
+  // Regex for emails
+  const emailRegex = /([a-zA-Z0-9._%+-]+@(radio-canada\.ca|cbc\.ca|[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}))/gi;
+  const emailsFound = [...new Set(text.match(emailRegex) || [])];
+
+  // Scan text for topic keywords across entire doc
+  const detectedDocTopics = [];
+  const textLower = text.toLowerCase();
+  TOPIC_KEYWORDS.forEach(kw => {
+    if (kw.patterns.some(p => textLower.includes(p))) {
+      detectedDocTopics.push(kw.tag);
+    }
+  });
+
+  if (emailsFound.length > 0) {
+    emailsFound.forEach((email, idx) => {
+      // Guess name from email format firstname.lastname@cbc.ca
+      const localPart = email.split("@")[0];
+      const nameParts = localPart.split(".").map(part => part.charAt(0).toUpperCase() + part.slice(1));
+      const guessedName = nameParts.join(" ");
+
+      // Guess division
+      let division = "ti";
+      if (textLower.includes("nouvelles") || textLower.includes("newsroom") || textLower.includes("journaliste") || textLower.includes("editorial")) {
+        division = "editorial";
+      } else if (textLower.includes("juridique") || textLower.includes("legal") || textLower.includes("crtc")) {
+        division = "corporate";
+      }
+
+      candidates.push({
+        id: `doc-extract-${Date.now()}-${idx}`,
+        name: guessedName,
+        title: "Contact extrait de document",
+        titleEn: "Document-extracted contact",
+        division,
+        department: email.includes("cbc.ca") ? "CBC" : "Radio-Canada",
+        bureau: email.includes("cbc.ca") ? "Toronto" : "Montréal",
+        email,
+        teamsId: email,
+        language: email.includes("cbc.ca") ? "en" : "fr",
+        skills: [...detectedDocTopics],
+        beats: ["Extrait de document interne"],
+        bioFr: `Contact découvert dans le document texte interne.`,
+        bioEn: `Contact extracted from internal document.`,
+        projects: [],
+        tools: []
+      });
+    });
+  } else {
+    // If no emails found, create a generic draft entry with detected tags
+    candidates.push({
+      id: `doc-extract-${Date.now()}-0`,
+      name: "Nouveau contact extrait",
+      title: "Spécialiste du sujet",
+      titleEn: "Subject Specialist",
+      division: "ti",
+      department: "CBC / Radio-Canada",
+      bureau: "Montréal",
+      email: "",
+      language: "bilingual",
+      skills: detectedDocTopics.length > 0 ? detectedDocTopics : ["Sujet interne"],
+      beats: ["Extrait de document"],
+      bioFr: text.slice(0, 180) + "...",
+      bioEn: text.slice(0, 180) + "...",
+      projects: [],
+      tools: []
+    });
+  }
+
+  return candidates;
+}
+
+// Helpers
+function findColIndex(headers, aliases) {
+  for (let i = 0; i < headers.length; i++) {
+    const h = headers[i].replace(/[^a-z0-9]/g, "");
+    for (const alias of aliases) {
+      if (h === alias.replace(/[^a-z0-9]/g, "")) return i;
+    }
+  }
+  return -1;
+}
+
+function splitRow(rowText, delimiter) {
+  // Simple CSV parser handling quotes
+  const result = [];
+  let cur = "";
+  let insideQuotes = false;
+  for (let i = 0; i < rowText.length; i++) {
+    const char = rowText[i];
+    if (char === '"') {
+      if (insideQuotes && rowText[i + 1] === '"') {
+        cur += '"';
+        i++;
+      } else {
+        insideQuotes = !insideQuotes;
+      }
+    } else if (char === delimiter && !insideQuotes) {
+      result.push(cur);
+      cur = "";
+    } else {
+      cur += char;
+    }
+  }
+  result.push(cur);
+  return result;
+}
+
+function splitTags(str) {
+  if (!str) return [];
+  return str.split(/[;,|]/).map(t => t.trim()).filter(t => t.length > 0);
+}
+
+
+/**
+ * CBC / Radio-Canada Expert Finder - Main Application Controller
+ */
+
+// Application State
+const state = {
+  experts: [],
+  filtered: [],
+  criteria: {
+    query: '',
+    division: 'all',
+    language: 'all',
+    bureau: 'all',
+    tag: ''
+  },
+  uiLang: 'fr', // 'fr' or 'en'
+  viewMode: 'grid', // 'grid' or 'list'
+  currentDetailExpert: null,
+  draftImportExperts: []
+};
+
+// UI Dictionary for Bilingual Support
+const I18N = {
+  fr: {
+    addExpert: "Ajouter un expert",
+    importData: "Importer / Parser",
+    export: "Exporter",
+    suggestions: "Suggestions rapides :",
+    filters: "Filtres de recherche",
+    reset: "Effacer",
+    division: "Secteur / Branche",
+    divAll: "Tous les secteurs",
+    language: "Langue de travail",
+    langAll: "Toutes les langues",
+    bureau: "Bureau / Emplacement",
+    bureauAll: "Tous les bureaux",
+    showing: "Affichage :",
+    allExperts: "Tous les spécialistes",
+    noResultsTitle: "Aucun expert trouvé",
+    noResultsDesc: "Essayez de simplifier votre requête ou ajoutez un nouveau spécialiste.",
+    clearFilters: "Réinitialiser les filtres",
+    emailBtn: "Courriel",
+    viewProfile: "Voir la fiche",
+    copyContact: "Copier contact",
+    contactCopied: "Coordonnées copiées dans le presse-papier !",
+    expertSaved: "Spécialiste enregistré avec succès !",
+    expertDeleted: "Spécialiste supprimé.",
+    resetSuccess: "Données d'origine rechargées avec succès.",
+    importedSuccess: "spécialistes importés avec succès !",
+    tools: "Outils & Systèmes clés :",
+    projects: "Projets récents & Réalisations :",
+    beats: "Dossiers & Sujets :",
+    skills: "Compétences :",
+    lastUpdated: "Dernière mise à jour :",
+    confluenceDocs: "Pages Confluence & Documentation interne :",
+    confluenceBadge: "Confluence"
+  },
+  en: {
+    addExpert: "Add Expert",
+    importData: "Import / Ingest",
+    export: "Export",
+    suggestions: "Quick suggestions:",
+    filters: "Search Filters",
+    reset: "Clear",
+    division: "Sector / Division",
+    divAll: "All divisions",
+    language: "Working Language",
+    langAll: "All languages",
+    bureau: "Bureau / Location",
+    bureauAll: "All locations",
+    showing: "Showing:",
+    allExperts: "All specialists",
+    noResultsTitle: "No experts found",
+    noResultsDesc: "Try refining your keywords or add a new specialist to the directory.",
+    clearFilters: "Reset filters",
+    emailBtn: "Email",
+    viewProfile: "View Profile",
+    copyContact: "Copy Contact",
+    contactCopied: "Contact details copied to clipboard!",
+    expertSaved: "Specialist saved successfully!",
+    expertDeleted: "Specialist removed.",
+    resetSuccess: "Seed dataset restored successfully.",
+    importedSuccess: "specialists imported successfully!",
+    tools: "Key Tools & Systems:",
+    projects: "Recent Projects & Coverage:",
+    beats: "Beats & Specialty Topics:",
+    skills: "Skills & Expertise:",
+    lastUpdated: "Last updated:",
+    confluenceDocs: "Confluence Pages & Internal Documentation:",
+    confluenceBadge: "Confluence"
+  }
+};
+
+/**
+ * Format ISO date string into human-readable date
+ */
+function formatDate(isoString, lang = 'fr') {
+  if (!isoString) return lang === 'fr' ? "Récemment" : "Recently";
+  try {
+    const d = new Date(isoString);
+    if (isNaN(d.getTime())) return lang === 'fr' ? "Récemment" : "Recently";
+    return d.toLocaleDateString(lang === 'fr' ? 'fr-CA' : 'en-CA', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  } catch {
+    return lang === 'fr' ? "Récemment" : "Recently";
+  }
+}
+
+/**
+ * Format ISO date string into friendly relative time
+ */
+function formatRelativeDate(isoString, lang = 'fr') {
+  if (!isoString) return lang === 'fr' ? "Récemment" : "Recently";
+  try {
+    const d = new Date(isoString);
+    const now = new Date();
+    const diffDays = Math.floor((now - d) / (1000 * 60 * 60 * 24));
+    if (diffDays <= 0) return lang === 'fr' ? "Mis à jour aujourd'hui" : "Updated today";
+    if (diffDays === 1) return lang === 'fr' ? "Mis à jour hier" : "Updated yesterday";
+    if (diffDays < 30) return lang === 'fr' ? `Mis à jour il y a ${diffDays} j` : `Updated ${diffDays}d ago`;
+    return formatDate(isoString, lang);
+  } catch {
+    return formatDate(isoString, lang);
+  }
+}
+
+// Initialize Application
+document.addEventListener("DOMContentLoaded", () => {
+  state.experts = loadExperts();
+  initLucide();
+  bindEvents();
+  applyFilters();
+});
+
+function initLucide() {
+  if (window.lucide) {
+    window.lucide.createIcons();
+  }
+}
+
+/**
+ * Event Bindings
+ */
+function bindEvents() {
+  // Language Switcher
+  document.getElementById("lang-fr-btn").addEventListener("click", () => setLanguage("fr"));
+  document.getElementById("lang-en-btn").addEventListener("click", () => setLanguage("en"));
+
+  // Search Input
+  const searchInput = document.getElementById("search-input");
+  const clearBtn = document.getElementById("btn-clear-search");
+
+  let debounceTimer;
+  searchInput.addEventListener("input", (e) => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+      state.criteria.query = e.target.value.trim();
+      if (state.criteria.query) {
+        clearBtn.classList.remove("hidden");
+      } else {
+        clearBtn.classList.add("hidden");
+      }
+      applyFilters();
+    }, 200);
+  });
+
+  clearBtn.addEventListener("click", () => {
+    searchInput.value = "";
+    state.criteria.query = "";
+    clearBtn.classList.add("hidden");
+    applyFilters();
+  });
+
+  // Quick Suggestion Tags
+  document.querySelectorAll(".quick-tag").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const tag = btn.getAttribute("data-tag");
+      searchInput.value = tag;
+      state.criteria.query = tag;
+      clearBtn.classList.remove("hidden");
+      applyFilters();
+    });
+  });
+
+  // Division Filter Group
+  document.querySelectorAll("input[name='filter-division']").forEach(radio => {
+    radio.addEventListener("change", (e) => {
+      state.criteria.division = e.target.value;
+      applyFilters();
+    });
+  });
+
+  // Language Filter Group
+  document.querySelectorAll("input[name='filter-language']").forEach(radio => {
+    radio.addEventListener("change", (e) => {
+      state.criteria.language = e.target.value;
+      applyFilters();
+    });
+  });
+
+  // Bureau Filter Select
+  document.getElementById("filter-bureau-select").addEventListener("change", (e) => {
+    state.criteria.bureau = e.target.value;
+    applyFilters();
+  });
+
+  // Reset Filters Button
+  document.getElementById("btn-reset-filters").addEventListener("click", resetAllFilters);
+  document.getElementById("btn-empty-clear").addEventListener("click", resetAllFilters);
+
+  // View Mode Buttons (Grid / List)
+  const gridBtn = document.getElementById("view-grid-btn");
+  const listBtn = document.getElementById("view-list-btn");
+
+  gridBtn.addEventListener("click", () => {
+    state.viewMode = 'grid';
+    gridBtn.classList.add("bg-slate-100", "text-slate-800");
+    gridBtn.classList.remove("text-slate-400");
+    listBtn.classList.remove("bg-slate-100", "text-slate-800");
+    listBtn.classList.add("text-slate-400");
+    renderResults();
+  });
+
+  listBtn.addEventListener("click", () => {
+    state.viewMode = 'list';
+    listBtn.classList.add("bg-slate-100", "text-slate-800");
+    listBtn.classList.remove("text-slate-400");
+    gridBtn.classList.remove("bg-slate-100", "text-slate-800");
+    gridBtn.classList.add("text-slate-400");
+    renderResults();
+  });
+
+  // Export Dropdown
+  const exportBtn = document.getElementById("btn-export-dropdown");
+  const exportMenu = document.getElementById("export-menu");
+  exportBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    exportMenu.classList.toggle("hidden");
+  });
+  document.addEventListener("click", () => exportMenu.classList.add("hidden"));
+
+  document.getElementById("btn-export-csv").addEventListener("click", () => {
+    exportToCSV(state.experts);
+    showToast("Export CSV généré !");
+  });
+  document.getElementById("btn-export-json").addEventListener("click", () => {
+    exportToJSON(state.experts);
+    showToast("Sauvegarde JSON générée !");
+  });
+
+  // Add Expert Modal Open
+  document.getElementById("btn-add-expert").addEventListener("click", () => {
+    openEditModal(null);
+  });
+
+  // Import Modal Open
+  document.getElementById("btn-open-import").addEventListener("click", () => {
+    openImportModal();
+  });
+
+  // Close modals
+  document.querySelectorAll(".btn-close-modal").forEach(btn => {
+    btn.addEventListener("click", closeAllModals);
+  });
+
+  // Form Submit (Add/Edit)
+  document.getElementById("form-expert-edit").addEventListener("submit", handleExpertFormSubmit);
+
+  // Delete Expert Button inside edit modal
+  document.getElementById("btn-delete-expert").addEventListener("click", () => {
+    const id = document.getElementById("edit-id").value;
+    if (id && confirm("Confirmez-vous la suppression de ce profil ?")) {
+      state.experts = deleteExpert(id);
+      closeAllModals();
+      applyFilters();
+      showToast(I18N[state.uiLang].expertDeleted);
+    }
+  });
+
+  // Ingestion Tabs
+  setupImportTabs();
+}
+
+/**
+ * Filter & Search Execution
+ */
+function applyFilters() {
+  state.filtered = searchExperts(state.experts, state.criteria);
+  renderResults();
+  updateSummaryBar();
+}
+
+/**
+ * Updates results count and summary
+ */
+function updateSummaryBar() {
+  const badge = document.getElementById("results-count-badge");
+  badge.textContent = `${state.filtered.length} / ${state.experts.length} experts`;
+
+  const summary = document.getElementById("active-filter-summary");
+  const t = I18N[state.uiLang];
+  const parts = [];
+
+  if (state.criteria.query) parts.push(`"${state.criteria.query}"`);
+  if (state.criteria.division !== 'all') {
+    const divNames = { ti: "Technologies & Infra", editorial: "Information", corporate: "Juridique & Ops" };
+    parts.push(divNames[state.criteria.division] || state.criteria.division);
+  }
+  if (state.criteria.bureau !== 'all') parts.push(state.criteria.bureau);
+  if (state.criteria.language !== 'all') parts.push(state.criteria.language.toUpperCase());
+  if (state.criteria.tag) parts.push(`[${state.criteria.tag}]`);
+
+  summary.textContent = parts.length > 0 ? parts.join(" • ") : t.allExperts;
+}
+
+/**
+ * Render the SME Cards Grid or List
+ */
+function renderResults() {
+  const container = document.getElementById("experts-container");
+  const emptyState = document.getElementById("empty-state");
+  const t = I18N[state.uiLang];
+
+  container.innerHTML = "";
+
+  if (state.filtered.length === 0) {
+    container.classList.add("hidden");
+    emptyState.classList.remove("hidden");
+    initLucide();
+    return;
+  }
+
+  container.classList.remove("hidden");
+  emptyState.classList.add("hidden");
+
+  if (state.viewMode === 'grid') {
+    container.className = "grid grid-cols-1 lg:grid-cols-2 gap-4";
+  } else {
+    container.className = "flex flex-col gap-3";
+  }
+
+  state.filtered.forEach(expert => {
+    const card = createExpertCard(expert, t);
+    container.appendChild(card);
+  });
+
+  initLucide();
+}
+
+/**
+ * Creates individual SME Card Element
+ */
+function createExpertCard(expert, t) {
+  const card = document.createElement("div");
+  card.className = "bg-white rounded-xl border border-slate-200 p-5 shadow-2xs hover:shadow-md hover:border-slate-300 transition-all flex flex-col justify-between";
+
+  // Division badge styling
+  let divLabel = "Technologies & Infra";
+  let divClass = "badge-ti";
+  if (expert.division === "editorial") {
+    divLabel = "Information & Nouvelles";
+    divClass = "badge-editorial";
+  } else if (expert.division === "corporate") {
+    divLabel = "Juridique & Opérations";
+    divClass = "badge-corporate";
+  }
+
+  // Language pill
+  let langLabel = expert.language === "bilingual" ? "FR / EN" : (expert.language || "FR").toUpperCase();
+
+  // Title depending on UI language
+  const titleDisplay = (state.uiLang === 'en' && expert.titleEn) ? expert.titleEn : (expert.title || expert.titleEn);
+  const bioDisplay = (state.uiLang === 'en' && expert.bioEn) ? expert.bioEn : (expert.bioFr || expert.bioEn || "");
+
+  // Initials
+  const initials = (expert.name || "EX")
+    .split(" ")
+    .map(n => n.charAt(0))
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+
+  // Highlighted fields if query exists
+  const q = state.criteria.query;
+  const highlightedName = highlightMatch(expert.name, q);
+  const highlightedTitle = highlightMatch(titleDisplay, q);
+
+  // Mailto with inquiry topic prefilled
+  const mailtoUrl = `mailto:${expert.email}?subject=${encodeURIComponent(`[Connecto CBC/RC] Question / Demande de collaboration`)}`;
+
+  card.innerHTML = `
+    <div>
+      <!-- Top Row: Division & Language Tags -->
+      <div class="flex items-center justify-between gap-2 mb-3">
+        <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full ${divClass}">
+          ${divLabel}
+        </span>
+        <span class="text-[11px] font-medium px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 border border-slate-200">
+          ${langLabel}
+        </span>
+      </div>
+
+      <!-- SME Info Header -->
+      <div class="flex items-start space-x-3 mb-3">
+        <div class="w-11 h-11 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold text-sm shrink-0 shadow-2xs">
+          ${initials}
+        </div>
+        <div class="min-w-0 flex-1">
+          <h4 class="text-sm font-bold text-slate-900 truncate hover:text-cbcred cursor-pointer transition" data-action="view-detail">
+            ${highlightedName}
+          </h4>
+          <p class="text-xs text-slate-600 font-medium line-clamp-1">${highlightedTitle}</p>
+          <div class="flex items-center text-[11px] text-slate-400 mt-0.5">
+            <i data-lucide="map-pin" class="w-3 h-3 mr-1 text-slate-400"></i>
+            <span class="truncate">${expert.bureau || "Montréal"} &bull; ${expert.department || "CBC / Radio-Canada"}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Skills / Beats Tags -->
+      <div class="flex flex-wrap gap-1 mb-3">
+        ${(expert.skills || []).slice(0, 4).map(skill => `
+          <button class="skill-pill text-[11px] bg-slate-50 hover:bg-slate-100 text-slate-700 px-2 py-0.5 rounded border border-slate-200 transition" data-skill="${skill}">
+            ${highlightMatch(skill, q)}
+          </button>
+        `).join("")}
+        ${(expert.beats || []).slice(0, 2).map(beat => `
+          <span class="text-[11px] bg-red-50 text-cbcred-hover px-2 py-0.5 rounded border border-red-100 font-medium">
+            #${highlightMatch(beat, q)}
+          </span>
+        `).join("")}
+      </div>
+
+      <!-- Bio / Summary Snippet -->
+      ${bioDisplay ? `
+        <p class="text-xs text-slate-500 line-clamp-2 mb-3 leading-relaxed">
+          ${highlightMatch(bioDisplay, q)}
+        </p>
+      ` : ''}
+
+      <!-- Metadata Strip: Last Updated & Confluence -->
+      <div class="flex items-center justify-between text-[11px] text-slate-400 pt-1 pb-2">
+        <span class="flex items-center" title="Dernière mise à jour du profil">
+          <i data-lucide="clock" class="w-3 h-3 mr-1 text-slate-400"></i>
+          <span>${formatRelativeDate(expert.updatedAt, state.uiLang)}</span>
+        </span>
+        ${(expert.confluenceLinks && expert.confluenceLinks.length > 0) ? `
+          <a href="${expert.confluenceLinks[0].url}" target="_blank" rel="noopener" class="inline-flex items-center text-blue-600 hover:text-blue-800 hover:underline font-medium" title="${expert.confluenceLinks[0].title}">
+            <i data-lucide="book-open" class="w-3 h-3 mr-1 text-blue-500"></i>
+            <span>${expert.confluenceLinks.length > 1 ? expert.confluenceLinks.length + ' docs' : 'Confluence'} &nearr;</span>
+          </a>
+        ` : ''}
+      </div>
+    </div>
+
+    <!-- Bottom Actions Bar -->
+    <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+      <a href="${mailtoUrl}" class="inline-flex items-center px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium transition" title="Envoyer un courriel">
+        <i data-lucide="mail" class="w-3.5 h-3.5 mr-1.5 text-slate-500"></i>
+        <span>${t.emailBtn}</span>
+      </a>
+
+      <div class="flex items-center space-x-1.5">
+        <button class="btn-copy-info p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition" title="${t.copyContact}">
+          <i data-lucide="copy" class="w-4 h-4"></i>
+        </button>
+        <button class="btn-open-detail text-xs font-semibold text-cbcred hover:text-cbcred-hover px-2.5 py-1.5 rounded-lg hover:bg-red-50 transition">
+          ${t.viewProfile} &rarr;
+        </button>
+      </div>
+    </div>
+  `;
+
+  // Attach card event listeners
+  card.querySelector("[data-action='view-detail']").addEventListener("click", () => openDetailModal(expert));
+  card.querySelector(".btn-open-detail").addEventListener("click", () => openDetailModal(expert));
+  
+  card.querySelectorAll(".skill-pill").forEach(pill => {
+    pill.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const skill = pill.getAttribute("data-skill");
+      const searchInput = document.getElementById("search-input");
+      searchInput.value = skill;
+      state.criteria.query = skill;
+      document.getElementById("btn-clear-search").classList.remove("hidden");
+      applyFilters();
+    });
+  });
+
+  card.querySelector(".btn-copy-info").addEventListener("click", (e) => {
+    e.stopPropagation();
+    copyExpertContact(expert);
+  });
+
+  return card;
+}
+
+/**
+ * Opens Expert Detail View Modal
+ */
+function openDetailModal(expert) {
+  state.currentDetailExpert = expert;
+  const modal = document.getElementById("modal-expert-detail");
+  const content = document.getElementById("modal-detail-content");
+  const t = I18N[state.uiLang];
+
+  const titleDisplay = (state.uiLang === 'en' && expert.titleEn) ? expert.titleEn : (expert.title || expert.titleEn);
+  const bioDisplay = (state.uiLang === 'en' && expert.bioEn) ? expert.bioEn : (expert.bioFr || expert.bioEn || "");
+
+  const mailtoUrl = `mailto:${expert.email}?subject=${encodeURIComponent(`[Connecto CBC/RC] Question / Demande de collaboration`)}`;
+
+  content.innerHTML = `
+    <!-- Header with Red Banner -->
+    <div class="bg-gradient-to-r from-cbcred to-cbcred-dark px-6 py-6 text-white relative">
+      <button class="btn-close-modal absolute top-4 right-4 text-white/80 hover:text-white p-1 rounded-lg">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+      
+      <div class="flex items-start space-x-4">
+        <div class="w-16 h-16 rounded-2xl bg-white text-cbcred font-bold text-xl flex items-center justify-center shrink-0 shadow-lg">
+          ${(expert.name || "EX").split(" ").map(n => n.charAt(0)).slice(0, 2).join("").toUpperCase()}
+        </div>
+        <div class="min-w-0 flex-1">
+          <div class="flex items-center space-x-2">
+            <h2 class="text-xl font-bold truncate">${expert.name}</h2>
+            <span class="text-xs px-2 py-0.5 rounded bg-white/20 text-white font-medium">
+              ${expert.language === 'bilingual' ? 'Bilingue (FR/EN)' : expert.language.toUpperCase()}
+            </span>
+          </div>
+          <p class="text-sm text-red-100 font-medium mt-0.5">${titleDisplay}</p>
+          <div class="flex flex-wrap items-center gap-3 text-xs text-red-200 mt-1">
+            <span class="flex items-center">
+              <i data-lucide="map-pin" class="w-3.5 h-3.5 mr-1 text-red-200"></i>
+              <span>${expert.locationDetail || expert.bureau} &bull; ${expert.department}</span>
+            </span>
+            <span class="flex items-center bg-black/20 px-2 py-0.5 rounded text-[11px] text-red-100">
+              <i data-lucide="clock" class="w-3 h-3 mr-1 text-red-200"></i>
+              <span>${t.lastUpdated} ${formatDate(expert.updatedAt, state.uiLang)}</span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact Shortcuts Strip -->
+    <div class="bg-slate-50 border-b border-slate-200 px-6 py-3 flex items-center justify-between text-xs">
+      <div class="flex items-center space-x-4">
+        <span class="flex items-center text-slate-600">
+          <i data-lucide="mail" class="w-3.5 h-3.5 mr-1.5 text-slate-400"></i>
+          <a href="${mailtoUrl}" class="hover:underline font-medium text-slate-800">${expert.email}</a>
+        </span>
+        ${expert.phone ? `
+          <span class="flex items-center text-slate-600">
+            <i data-lucide="phone" class="w-3.5 h-3.5 mr-1.5 text-slate-400"></i>
+            <span>${expert.phone}</span>
+          </span>
+        ` : ''}
+      </div>
+
+      <div class="flex items-center space-x-2">
+        <a href="${mailtoUrl}" class="px-3 py-1.5 bg-cbcred hover:bg-cbcred-hover text-white rounded-lg font-medium flex items-center shadow-xs transition" title="Envoyer un courriel">
+          <i data-lucide="mail" class="w-3.5 h-3.5 mr-1.5"></i>
+          <span>${t.emailBtn}</span>
+        </a>
+        <button id="modal-btn-copy" class="px-3 py-1.5 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-lg font-medium flex items-center shadow-2xs transition">
+          <i data-lucide="copy" class="w-3.5 h-3.5 mr-1.5 text-slate-500"></i>
+          <span>${t.copyContact}</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Body Details -->
+    <div class="p-6 space-y-5 text-xs">
+      
+      <!-- Bio -->
+      ${bioDisplay ? `
+        <div>
+          <h4 class="font-bold text-slate-900 mb-1.5 uppercase tracking-wider text-[11px] text-slate-400">Description & Rôle</h4>
+          <p class="text-slate-700 text-sm leading-relaxed">${bioDisplay}</p>
+        </div>
+      ` : ''}
+
+      <!-- Skills & Expertise -->
+      <div>
+        <h4 class="font-bold text-slate-900 mb-2 uppercase tracking-wider text-[11px] text-slate-400">${t.skills}</h4>
+        <div class="flex flex-wrap gap-1.5">
+          ${(expert.skills || []).map(skill => `
+            <span class="px-2.5 py-1 bg-slate-100 text-slate-800 rounded-md font-medium border border-slate-200">
+              ${skill}
+            </span>
+          `).join("")}
+        </div>
+      </div>
+
+      <!-- Beats & Specialty Topics -->
+      ${(expert.beats && expert.beats.length > 0) ? `
+        <div>
+          <h4 class="font-bold text-slate-900 mb-2 uppercase tracking-wider text-[11px] text-slate-400">${t.beats}</h4>
+          <div class="flex flex-wrap gap-1.5">
+            ${expert.beats.map(beat => `
+              <span class="px-2.5 py-1 bg-red-50 text-cbcred-dark rounded-md font-medium border border-red-200">
+                # ${beat}
+              </span>
+            `).join("")}
+          </div>
+        </div>
+      ` : ''}
+
+      <!-- Known Tools & Software -->
+      ${(expert.tools && expert.tools.length > 0) ? `
+        <div>
+          <h4 class="font-bold text-slate-900 mb-2 uppercase tracking-wider text-[11px] text-slate-400">${t.tools}</h4>
+          <div class="flex flex-wrap gap-1.5">
+            ${expert.tools.map(tool => `
+              <span class="px-2.5 py-1 bg-emerald-50 text-emerald-800 rounded-md font-medium border border-emerald-200 flex items-center">
+                <i data-lucide="cpu" class="w-3 h-3 mr-1 text-emerald-600"></i>
+                <span>${tool}</span>
+              </span>
+            `).join("")}
+          </div>
+        </div>
+      ` : ''}
+
+      <!-- Confluence Documentation -->
+      ${(expert.confluenceLinks && expert.confluenceLinks.length > 0) ? `
+        <div>
+          <h4 class="font-bold text-slate-900 mb-2 uppercase tracking-wider text-[11px] text-slate-400 flex items-center">
+            <i data-lucide="book-open" class="w-3.5 h-3.5 mr-1.5 text-blue-600"></i>
+            <span>${t.confluenceDocs}</span>
+          </h4>
+          <div class="space-y-1.5">
+            ${expert.confluenceLinks.map(doc => `
+              <a href="${doc.url}" target="_blank" rel="noopener" class="flex items-center justify-between p-2.5 rounded-lg bg-blue-50/70 border border-blue-200 hover:bg-blue-100 text-blue-950 group transition">
+                <div class="flex items-center space-x-2.5 min-w-0">
+                  <div class="w-7 h-7 rounded-md bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-2xs">
+                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                  </div>
+                  <div class="truncate">
+                    <p class="font-semibold text-xs text-blue-950 group-hover:underline truncate">${doc.title || "Page Confluence"}</p>
+                    <p class="text-[10px] text-blue-600 font-mono truncate">${doc.url}</p>
+                  </div>
+                </div>
+                <i data-lucide="arrow-up-right" class="w-4 h-4 text-blue-500 shrink-0 ml-2"></i>
+              </a>
+            `).join("")}
+          </div>
+        </div>
+      ` : ''}
+
+      <!-- Projects -->
+      ${(expert.projects && expert.projects.length > 0) ? `
+        <div>
+          <h4 class="font-bold text-slate-900 mb-2 uppercase tracking-wider text-[11px] text-slate-400">${t.projects}</h4>
+          <ul class="list-disc list-inside space-y-1 text-slate-700">
+            ${expert.projects.map(proj => `<li>${proj}</li>`).join("")}
+          </ul>
+        </div>
+      ` : ''}
+
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="bg-slate-50 border-t border-slate-100 px-6 py-3 flex items-center justify-between">
+      <button id="modal-btn-edit" class="text-xs text-slate-600 hover:text-slate-900 font-semibold flex items-center">
+        <i data-lucide="edit-3" class="w-3.5 h-3.5 mr-1 text-slate-500"></i>
+        <span>Modifier ce profil</span>
+      </button>
+      <button class="btn-close-modal px-4 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-lg text-xs font-semibold">
+        Fermer
+      </button>
+    </div>
+  `;
+
+  content.querySelectorAll(".btn-close-modal").forEach(btn => btn.addEventListener("click", closeAllModals));
+  content.querySelector("#modal-btn-copy").addEventListener("click", () => copyExpertContact(expert));
+  content.querySelector("#modal-btn-edit").addEventListener("click", () => {
+    closeAllModals();
+    openEditModal(expert);
+  });
+
+  modal.classList.remove("hidden");
+  initLucide();
+}
+
+/**
+ * Opens Add / Edit Expert Modal
+ */
+function openEditModal(expert = null) {
+  const modal = document.getElementById("modal-expert-edit");
+  const form = document.getElementById("form-expert-edit");
+  const deleteBtn = document.getElementById("btn-delete-expert");
+  const titleElem = document.getElementById("modal-edit-title");
+
+  form.reset();
+
+  if (expert) {
+    titleElem.querySelector("span").textContent = `Modifier : ${expert.name}`;
+    deleteBtn.classList.remove("hidden");
+
+    document.getElementById("edit-id").value = expert.id || "";
+    document.getElementById("edit-name").value = expert.name || "";
+    document.getElementById("edit-email").value = expert.email || "";
+    document.getElementById("edit-title").value = expert.title || "";
+    document.getElementById("edit-title-en").value = expert.titleEn || "";
+    document.getElementById("edit-division").value = expert.division || "ti";
+    document.getElementById("edit-department").value = expert.department || "";
+    document.getElementById("edit-bureau").value = expert.bureau || "Montréal";
+    document.getElementById("edit-language").value = expert.language || "bilingual";
+    document.getElementById("edit-skills").value = (expert.skills || []).join(", ");
+    document.getElementById("edit-beats").value = (expert.beats || []).join(", ");
+    document.getElementById("edit-tools").value = (expert.tools || []).join(", ");
+    document.getElementById("edit-confluence").value = (expert.confluenceLinks || []).map(c => `${c.title || 'Doc'}|${c.url || ''}`).join(", ");
+    document.getElementById("edit-bio").value = expert.bioFr || expert.bioEn || "";
+  } else {
+    titleElem.querySelector("span").textContent = "Ajouter un nouvel expert";
+    deleteBtn.classList.add("hidden");
+    document.getElementById("edit-id").value = "";
+    document.getElementById("edit-confluence").value = "";
+  }
+
+  modal.classList.remove("hidden");
+  initLucide();
+}
+
+/**
+ * Handles Add/Edit Form Submission
+ */
+function handleExpertFormSubmit(e) {
+  e.preventDefault();
+
+  const id = document.getElementById("edit-id").value;
+  const name = document.getElementById("edit-name").value.trim();
+  const email = document.getElementById("edit-email").value.trim();
+  const title = document.getElementById("edit-title").value.trim();
+  const titleEn = document.getElementById("edit-title-en").value.trim();
+  const division = document.getElementById("edit-division").value;
+  const department = document.getElementById("edit-department").value.trim() || "CBC / Radio-Canada";
+  const bureau = document.getElementById("edit-bureau").value.trim() || "Montréal";
+  const language = document.getElementById("edit-language").value;
+  const skills = document.getElementById("edit-skills").value.split(",").map(s => s.trim()).filter(Boolean);
+  const beats = document.getElementById("edit-beats").value.split(",").map(s => s.trim()).filter(Boolean);
+  const tools = document.getElementById("edit-tools").value.split(",").map(s => s.trim()).filter(Boolean);
+  const bio = document.getElementById("edit-bio").value.trim();
+
+  // Parse Confluence links: "Titre|URL, Titre2|URL2" or "URL1, URL2"
+  const rawConf = document.getElementById("edit-confluence").value.trim();
+  const confluenceLinks = rawConf ? rawConf.split(",").map(item => {
+    const trimmed = item.trim();
+    if (!trimmed) return null;
+    const parts = trimmed.split("|");
+    if (parts.length >= 2) {
+      return { title: parts[0].trim(), url: parts[1].trim() };
+    } else if (parts[0].startsWith("http")) {
+      return { title: "Page Confluence", url: parts[0].trim() };
+    } else {
+      return { title: parts[0].trim(), url: `https://confluence.cbcrc.ca/display/SEARCH?text=${encodeURIComponent(parts[0].trim())}` };
+    }
+  }).filter(Boolean) : [];
+
+  const expert = {
+    id: id || `sme-${Date.now()}`,
+    name,
+    email,
+    teamsId: email,
+    title,
+    titleEn: titleEn || title,
+    division,
+    department,
+    bureau,
+    language,
+    skills,
+    beats,
+    tools,
+    confluenceLinks,
+    bioFr: bio,
+    bioEn: bio,
+    projects: [],
+    updatedAt: new Date().toISOString()
+  };
+
+  state.experts = upsertExpert(expert);
+  closeAllModals();
+  applyFilters();
+  showToast(I18N[state.uiLang].expertSaved);
+}
+
+/**
+ * Opens Data Ingestion & Importer Modal
+ */
+function openImportModal() {
+  document.getElementById("modal-import").classList.remove("hidden");
+  initLucide();
+}
+
+/**
+ * Setup Tabs inside Ingestion Modal
+ */
+function setupImportTabs() {
+  const tabCsv = document.getElementById("tab-btn-csv");
+  const tabDoc = document.getElementById("tab-btn-doc");
+  const tabReset = document.getElementById("tab-btn-reset");
+
+  const contentCsv = document.getElementById("tab-content-csv");
+  const contentDoc = document.getElementById("tab-content-doc");
+  const contentReset = document.getElementById("tab-content-reset");
+
+  function switchTab(activeBtn, activeContent) {
+    [tabCsv, tabDoc, tabReset].forEach(btn => {
+      btn.className = "py-3 border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center";
+    });
+    activeBtn.className = "py-3 border-b-2 border-cbcred text-cbcred flex items-center";
+
+    [contentCsv, contentDoc, contentReset].forEach(c => c.classList.add("hidden"));
+    activeContent.classList.remove("hidden");
+    initLucide();
+  }
+
+  tabCsv.addEventListener("click", () => switchTab(tabCsv, contentCsv));
+  tabDoc.addEventListener("click", () => switchTab(tabDoc, contentDoc));
+  tabReset.addEventListener("click", () => switchTab(tabReset, contentReset));
+
+  // CSV Drag and Drop
+  const dropZone = document.getElementById("drop-zone");
+  const fileInput = document.getElementById("file-input-csv");
+
+  dropZone.addEventListener("click", () => fileInput.click());
+  dropZone.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    dropZone.classList.add("border-cbcred", "bg-red-50/40");
+  });
+  dropZone.addEventListener("dragleave", () => {
+    dropZone.classList.remove("border-cbcred", "bg-red-50/40");
+  });
+  dropZone.addEventListener("drop", (e) => {
+    e.preventDefault();
+    dropZone.classList.remove("border-cbcred", "bg-red-50/40");
+    if (e.dataTransfer.files.length > 0) {
+      handleCsvFile(e.dataTransfer.files[0]);
+    }
+  });
+  fileInput.addEventListener("change", (e) => {
+    if (e.target.files.length > 0) {
+      handleCsvFile(e.target.files[0]);
+    }
+  });
+
+  // Confirm CSV Import
+  document.getElementById("btn-confirm-csv-import").addEventListener("click", () => {
+    if (state.draftImportExperts.length > 0) {
+      state.draftImportExperts.forEach(exp => upsertExpert(exp));
+      state.experts = loadExperts();
+      closeAllModals();
+      applyFilters();
+      showToast(`${state.draftImportExperts.length} ${I18N[state.uiLang].importedSuccess}`);
+    }
+  });
+
+  // Document Text Parser Action
+  document.getElementById("btn-parse-doc-text").addEventListener("click", () => {
+    const text = document.getElementById("doc-text-input").value;
+    if (!text.trim()) {
+      alert("Veuillez coller du texte à analyser.");
+      return;
+    }
+    const candidates = parseUnstructuredDocument(text);
+    state.draftImportExperts = candidates;
+
+    const list = document.getElementById("doc-preview-list");
+    list.innerHTML = candidates.map(c => `
+      <div class="py-2 flex items-center justify-between text-xs">
+        <div>
+          <span class="font-bold text-slate-800">${c.name}</span>
+          <span class="text-slate-500">(${c.email || "Sans courriel"})</span>
+          <div class="text-[11px] text-slate-400 mt-0.5">Compétences détectées : ${(c.skills || []).join(", ") || "Général"}</div>
+        </div>
+      </div>
+    `).join("");
+
+    document.getElementById("doc-preview-container").classList.remove("hidden");
+  });
+
+  // Confirm Document Ingest
+  document.getElementById("btn-confirm-doc-import").addEventListener("click", () => {
+    if (state.draftImportExperts.length > 0) {
+      state.draftImportExperts.forEach(exp => upsertExpert(exp));
+      state.experts = loadExperts();
+      closeAllModals();
+      applyFilters();
+      showToast(`${state.draftImportExperts.length} ${I18N[state.uiLang].importedSuccess}`);
+    }
+  });
+
+  // Confirm Reset to Seed Data
+  document.getElementById("btn-confirm-reset").addEventListener("click", () => {
+    state.experts = resetToSeedData();
+    closeAllModals();
+    applyFilters();
+    showToast(I18N[state.uiLang].resetSuccess);
+  });
+}
+
+function handleCsvFile(file) {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const parsed = parseCSV(e.target.result);
+      state.draftImportExperts = parsed;
+
+      const list = document.getElementById("csv-preview-list");
+      list.innerHTML = parsed.map(c => `
+        <div class="py-1.5 flex items-center justify-between text-xs">
+          <div>
+            <span class="font-bold text-slate-800">${c.name}</span> &bull; 
+            <span class="text-slate-600">${c.title}</span> 
+            <span class="text-slate-400">(${c.bureau})</span>
+          </div>
+          <span class="text-[11px] text-slate-500">${c.email}</span>
+        </div>
+      `).join("");
+
+      document.getElementById("csv-preview-container").classList.remove("hidden");
+    } catch (err) {
+      alert("Erreur lors de la lecture du fichier : " + err.message);
+    }
+  };
+  reader.readAsText(file, "UTF-8");
+}
+
+/**
+ * Copies SME Contact Info into Clipboard
+ */
+function copyExpertContact(expert) {
+  const text = [
+    `Nom : ${expert.name}`,
+    `Titre : ${expert.title || expert.titleEn}`,
+    `Secteur : ${expert.department} (${expert.bureau})`,
+    `Courriel : ${expert.email}`,
+    expert.phone ? `Téléphone : ${expert.phone}` : null,
+    `Spécialités : ${(expert.skills || []).join(", ")}`
+  ].filter(Boolean).join("\n");
+
+  navigator.clipboard.writeText(text).then(() => {
+    showToast(I18N[state.uiLang].contactCopied);
+  }).catch(() => {
+    showToast("Erreur lors de la copie");
+  });
+}
+
+/**
+ * Display Toast Notification
+ */
+function showToast(msg) {
+  const toast = document.getElementById("toast");
+  const msgElem = document.getElementById("toast-message");
+  msgElem.textContent = msg;
+
+  toast.classList.remove("hidden");
+  toast.classList.add("translate-y-0", "opacity-100");
+
+  setTimeout(() => {
+    toast.classList.add("hidden");
+  }, 3200);
+}
+
+/**
+ * Switch UI Language (Français / English)
+ */
+function setLanguage(lang) {
+  state.uiLang = lang;
+  const frBtn = document.getElementById("lang-fr-btn");
+  const enBtn = document.getElementById("lang-en-btn");
+
+  if (lang === 'fr') {
+    frBtn.className = "px-2.5 py-1 rounded-md bg-white text-slate-900 shadow-sm transition-all";
+    enBtn.className = "px-2.5 py-1 rounded-md text-slate-500 hover:text-slate-900 transition-all";
+    document.documentElement.lang = "fr";
+  } else {
+    enBtn.className = "px-2.5 py-1 rounded-md bg-white text-slate-900 shadow-sm transition-all";
+    frBtn.className = "px-2.5 py-1 rounded-md text-slate-500 hover:text-slate-900 transition-all";
+    document.documentElement.lang = "en";
+  }
+
+  // Update i18n placeholders
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    const key = el.getAttribute("data-i18n");
+    if (I18N[lang][key]) {
+      el.textContent = I18N[lang][key];
+    }
+  });
+
+  const searchInput = document.getElementById("search-input");
+  if (lang === 'fr') {
+    searchInput.placeholder = "Rechercher par sujet, compétence, outil ou nom (ex: Trint, Cloud, Dalet, Cybersécurité, Économie, IA)...";
+  } else {
+    searchInput.placeholder = "Search by topic, skill, tool, or name (e.g. Trint, Cloud, Dalet, Cybersecurity, Economy, AI)...";
+  }
+
+  applyFilters();
+}
+
+/**
+ * Reset all active filters
+ */
+function resetAllFilters() {
+  state.criteria = {
+    query: '',
+    division: 'all',
+    language: 'all',
+    bureau: 'all',
+    tag: ''
+  };
+
+  document.getElementById("search-input").value = "";
+  document.getElementById("btn-clear-search").classList.add("hidden");
+  document.querySelector("input[name='filter-division'][value='all']").checked = true;
+  document.querySelector("input[name='filter-language'][value='all']").checked = true;
+  document.getElementById("filter-bureau-select").value = "all";
+
+  applyFilters();
+}
+
+/**
+ * Closes all modals
+ */
+function closeAllModals() {
+  document.getElementById("modal-expert-detail").classList.add("hidden");
+  document.getElementById("modal-expert-edit").classList.add("hidden");
+  document.getElementById("modal-import").classList.add("hidden");
+}
+
+
+})();
+</script>
+</body>
+</html>
