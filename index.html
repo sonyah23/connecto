@@ -1704,7 +1704,7 @@ function highlightMatch(text, query) {
   const allWords = [...queryInfo.tokens, ...queryInfo.synonyms].filter(w => w.length > 2);
   if (allWords.length === 0) return text;
 
-  const regex = new RegExp(`(${allWords.map(w => w.replace(/[.*+?^${}()|[\]\\]/g, '\\<script type="module" src="./js/app.js"></script>')).join("|")})`, "gi");
+  const regex = new RegExp(`(${allWords.map(w => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join("|")})`, "gi");
   return text.replace(regex, `<mark class="bg-amber-100 text-amber-900 px-0.5 rounded font-medium">$1</mark>`);
 }
 
